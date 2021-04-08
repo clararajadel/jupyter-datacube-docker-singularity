@@ -53,16 +53,25 @@ To write a Dockerfile and build the docker image some previous steps should be d
   ```
 - Divide workspace for local files and acube server files.
 ```
-
-- Create virtual environment using conda (because the environment is saved out from conda /envs all path should be written):
+(base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ mkdir local
+(base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ mkdir server
 ```
- conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
- source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
+- Create and activate virtual environment named "jupy-docker" using conda (all path is written because the environment is saved out from conda /envs):
 ```
+(base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
+(base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 ```
 ## 2. Jupyter notebook
 - Install jupyter and add ipykernel
 ```
-conda install jupyter
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install jupyter
+(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ python -m ipykernel install --user --name jupy-docker --display-name "Python (jupy-docker)"
 ```
+if necessary:
+```
+(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install ipykernel
+```
+Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks
+
+- Make directory "nbs"
+ 
