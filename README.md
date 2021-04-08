@@ -51,7 +51,7 @@ To write a Dockerfile and build the docker image some previous steps should be d
   ```
   (base) clara@LAPTOP-RKJGL9HN:~/projects$ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
-- Divide workspace for local files and acube server files.
+- Create directories for local files and acube server files.
 ```
 (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ mkdir local
 (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ mkdir server
