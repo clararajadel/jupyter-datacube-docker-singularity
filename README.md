@@ -72,7 +72,7 @@ if necessary install ipykernel:
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install ipykernel
 ```
 
-- **Make directory "nbs"** inside "local" directory
+- **Make directory "nbs"** inside "local" directory (this step is important: docker will only read notebooks inside this folder)
  ```
  (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ cd local
  (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir nbs
