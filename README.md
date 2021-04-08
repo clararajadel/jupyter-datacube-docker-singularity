@@ -49,42 +49,42 @@ Docker image should be build locally because there is not super user root in the
   ## 1. Create workspace
   - **Clone this repository** (if cloned you can avoid following steps):
   ```
-  (base) clara@LAPTOP-RKJGL9HN:~/projects$ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
+  $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
 - **Create directories** for local files and acube server files.
 ```
-(base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ mkdir local
-(base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ mkdir server
+$ mkdir local
+$ mkdir server
 ```
 - **Create and activate virtual environment** named "jupy-docker" using conda (all path is written because the environment is saved out from conda /envs):
 ```
-(base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
-(base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
+$ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
+$ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 ```
 ## 2. Jupyter notebook
 - **Install jupyter and add ipykernel**. Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks.
 ```
-(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install jupyter
-(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ python -m ipykernel install --user --name jupy-docker --display-name "Python (jupy-docker)"
+$ conda install jupyter
+$ python -m ipykernel install --user --name jupy-docker --display-name "Python (jupy-docker)"
 ```
 if necessary install ipykernel:
 ```
-(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install ipykernel
+$ conda install ipykernel
 ```
 
 - **Make directory "nbs"** inside "local" directory (this step is important: docker will only read notebooks inside this folder)
  ```
- (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ cd local
- (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir nbs
+ $ cd local
+ $ mkdir nbs
  ```
  - **Create password for jupyter**. The terminal will ask you for a password and then will print a string. Copy this string to paste it later in the jupyter configuration.
  ```
- (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ ipython -c "from notebook.auth import passwd; passwd()"
+$ ipython -c "from notebook.auth import passwd; passwd()"
  ```
 - **Customize jupyter configuration** creating a jupyter.py file inside a "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration.
 ```
-(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir conf
-(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano jupyter.py
+$ mkdir conf
+$ nano jupyter.py
 ```
 In jupyter.py:
 ```
@@ -104,16 +104,17 @@ c.NotebookApp.allow_root = True
 c.NotebookApp.allow_password_change = True
 c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port', '80']
 ```
-    
-   Notes about jupyter.py config:
-        - nbs: root directory
-        - allow_origin: to all (to launch it from the VM)
-        - port: 5200 (use one port that is not used by other users in the VM)
-        - allow_root: because the project is shared maybe I should change to False
+ ---
+ **Notes about jupyter.py config:**
+ - nbs: root directory
+ - allow_origin: to all (to launch it from the VM)
+ - port: 5200 (use one port that is not used by other users in the VM)
+ - allow_root: because the project is shared maybe I should change to False
+ ---
 
 - **Access jupyter notebook**:
 ```
-(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ jupyter notebook --config=./conf/jupyter
+$ jupyter notebook --config=./conf/jupyter
 ```
 
 ## 3. Docker
@@ -140,13 +141,17 @@ From Dockerfile a docker image will be build, tagged and run.
     ```
 - **Create entrypoint.sh** in /local/scripts (create scripts):
     ```
-    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir scripts
-    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ cd scripts
-    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local/scripts$ nano entrypoint.sh
+    $ mkdir scripts
+    $ cd scripts
+    $ nano entrypoint.sh
     ```
     - In entrypoint.sh add the order to open Jupyter Notebook following jupyter.py config. /app path is used because the environment in the Dockerfile will be named /app and singularity needs the entire path to build the image.
     ```
     /usr/local/bin/jupyter-notebook --config=/app/conf/jupyter.py
+    ```
+    - The format of entrypoint.sh should be changed (íf not maybe you get error while building the image). In the terminal type:
+    ```
+    chmod +x entrypoint.sh
     ```
 - **Create a file named Dockerfile** in /local:
     ```
@@ -158,6 +163,7 @@ From Dockerfile a docker image will be build, tagged and run.
     FROM ubuntu:latest
 
     # WORKSPACE
+    ENV DEBIAN_FRONTEND=noninteractive
     ENV APP_HOME /app
     WORKDIR ${APP_HOME}
 
@@ -189,7 +195,7 @@ From Dockerfile a docker image will be build, tagged and run.
     CMD ["/app/scripts/entrypoint.sh"]
     ```
     ---
-    **NOTE**
+    **Notes about Dockerfile**
 
     - The base image is Ubuntu to work with Linux (but python base image I think also includes linux software).
     - The new working environment is /app. That is why the entrypoint.sh order includes /app in the config. (ENV: declare the name of environmental variables and WORKDIR: specifies the work environment)
@@ -199,5 +205,21 @@ From Dockerfile a docker image will be build, tagged and run.
     - After that gdal is installed. Datacube doesn't need GDAL but we use it in our project.
     - Pip installs the requirements.txt libraries.
     - The final command is for reading the entrypoint.sh. You have to write all the filepath if you want to run the code (with Singularity is not possible writing: ./scripts/entrypoint.sh).
-
+    - All commands that include <DEBIAN_FRONTEND=noninteractive> are created to avoid interaction while building the image.
     ---
+- **Build the image**: In the terminal, inside the folder where is the Dockerfile type:
+```
+docker build -t eodc-jupyter -f Dockerfile .
+```
+- **Create the resgistry image** (this step is in the A4Cube ppt of Dockers). If you avoid this step it won't work.
+```
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+```
+- **Tag your image** with the version (creating "other image": same ID, different name). This is the image to push in the docker server. The port of the computer from where is launched is specified.
+```
+docker tag eodc-jupyter localhost:5000/eodc-jupyter:1.0
+```
+- Finally, **push the docker image** to the server and it will become available in other machine through docker server.
+```
+docker push localhost:5000/eodc-jupyter:1.0
+```
