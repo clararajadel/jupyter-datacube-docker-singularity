@@ -51,10 +51,9 @@ Docker image should be build locally because there is not super user root in the
   ```
   $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
-- **Create directories** for local files and acube server files.
+- **Create local workspace**. This folder will contain all files required to build the docker image. Later it will be copied (or cloned) in the VM to have access also to this files from the VM.
 ```
 $ mkdir local
-$ mkdir server
 ```
 - **Create and activate virtual environment** named "jupy-docker" using conda (all path is written because the environment is saved out from conda /envs):
 ```
@@ -223,3 +222,26 @@ docker tag eodc-jupyter localhost:5000/eodc-jupyter:1.0
 ```
 docker push localhost:5000/eodc-jupyter:1.0
 ```
+
+# Run singularity in server
+- **Acces to A4Floods VM**. You can do local and remote port forwarding in one command --> write in the terminal:
+```
+ssh -L 5200:localhost:5200 -R 5201:localhost:5000 boku@acube4floods.eodchosting.eu
+```
+-  **Clone this repository**: jupyter-datacube-docker-singularity repository.
+ ```
+  $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
+  ```
+- **Allow singularity work in server** running the following command. (I did a similar step for running docker in Ubuntu for Windows, see in install Docker section)
+```
+export SINGULARITY_NOHTTPS=1
+```
+- **Build and run singularity image**. -B /eodc:/eodc : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option.
+```
+singularity build datacube.simg docker://localhost:5201/eodc-jupyter:1.0
+singularity exec -B /eodc:/eodc datacube.simg  /app/scripts/entrypoint.sh
+```
+-  **Access your jupyter notebooks** at your browser at url: localhost:5200
+
+# Save new notebooks
+
