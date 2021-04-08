@@ -63,7 +63,7 @@ Docker image should be build locally because there is not super user root in the
 (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 ```
 ## 2. Jupyter notebook
-- Install jupyter and add ipykernel
+- Install jupyter and add ipykernel. Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks.
 ```
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install jupyter
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ python -m ipykernel install --user --name jupy-docker --display-name "Python (jupy-docker)"
@@ -72,7 +72,6 @@ if necessary install ipykernel:
 ```
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install ipykernel
 ```
-Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks
 
 - Make directory "nbs"
  
