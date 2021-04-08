@@ -72,8 +72,9 @@ if necessary install ipykernel:
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install ipykernel
 ```
 
-- Make directory "nbs"
+- Make directory "nbs" inside "local" directory
  ```
+ (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ cd local
  (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir nbs
  ```
  - Create password for jupyter. The terminal will ask you for a password and then will print a string. Copy this string to paste it later in the jupyter configuration.
