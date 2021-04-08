@@ -55,7 +55,7 @@ Docker image should be build locally because there is not super user root in the
 ```
 $ mkdir local
 ```
-- **Create and activate virtual environment** named "jupy-docker" using conda (all path is written because the environment is saved out from conda /envs):
+- **Create and activate virtual environment** named "jupy-docker" using conda (all path is written because the environment is saved out from conda /envs). This step is not mandatory, you can use an existing environment but I do not recommend it.
 ```
 $ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 $ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
@@ -111,10 +111,11 @@ c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port',
  - allow_root: because the project is shared maybe I should change to False
  ---
 
-- **Access jupyter notebook**:
+- **Access jupyter notebook and save a .ipynb**:
 ```
 $ jupyter notebook --config=./conf/jupyter
 ```
+Write a small code in a .ipynb file and save it in the "nbs" folders. This step is necessary because if not "nbs" folder won't be cloned. Moreover, it verifies that this set up works properly.
 
 ## 3. Docker
 First we will write a Dockerfile. This Dockerfile will:
