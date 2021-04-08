@@ -27,7 +27,7 @@ if necessary make .ssh directory:
 ## Intro (theory)
 Docker image should be build locally because there is not super user root in the server to run Docker. To write a Dockerfile and build the docker image some previous steps should be done:
 
-**1. Create workspace:** folder to save all files together + virtual environment.
+**1. Create workspace:** folder to save all files together + virtual environment. Docker will read files inside this workspace.
 
 **2. Jupyter notebook:** 
     
