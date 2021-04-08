@@ -15,9 +15,12 @@
 - Create key:
 
 ```
-(base) clara@LAPTOP-RKJGL9HN:~$ mkdir .ssh (if necessary)
 (base) clara@LAPTOP-RKJGL9HN:~$ cd .ssh
 (base) clara@LAPTOP-RKJGL9HN:~/.ssh$ ssh-keygen -t rsa
+```
+if necessary make .ssh directory:
+```
+(base) clara@LAPTOP-RKJGL9HN:~$ mkdir .ssh
 ```
 - Get access to server (Emma)
 
@@ -67,7 +70,7 @@ To write a Dockerfile and build the docker image some previous steps should be d
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install jupyter
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ python -m ipykernel install --user --name jupy-docker --display-name "Python (jupy-docker)"
 ```
-if necessary:
+if necessary install ipykernel:
 ```
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install ipykernel
 ```
