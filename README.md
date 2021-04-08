@@ -43,4 +43,8 @@ To write a Dockerfile and build the docker image some previous steps should be d
    - Build, run, tag and push docker image
   
   ## 1. Create workspace
-  
+  - Clone this repository:
+  ```
+  (base) clara@LAPTOP-RKJGL9HN:~/projects$ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
+  ```
+<!-- If you clone this repository you can avoid following steps -->
