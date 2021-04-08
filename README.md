@@ -126,8 +126,7 @@ First we will write a Dockerfile. This Dockerfile will:
 From Dockerfile a docker image will be build, tagged and run.
 
 - **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. *I'm using Ubuntu WSL2 in Windows 10 so I followed this documentation https://docs.docker.com/engine/install/ubuntu/. Note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/.*
-- **Dockerfile**:
-    - Create requirements.txt in /local with a list of required libraries:
+- **Create requirements.txt** in /local with a list of required libraries:
     ```
     (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano requirements.txt
     ```
@@ -139,7 +138,7 @@ From Dockerfile a docker image will be build, tagged and run.
     random2
     scikit-learn
     ```
-    - Create entrypoint.sh in /local/scripts (create scripts):
+- **Create entrypoint.sh** in /local/scripts (create scripts):
     ```
     (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir scripts
     (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ cd scripts
@@ -149,7 +148,7 @@ From Dockerfile a docker image will be build, tagged and run.
     ```
     /usr/local/bin/jupyter-notebook --config=/app/conf/jupyter.py
     ```
-    - Create a file named Dockerfile in /local:
+- **Create a file named Dockerfile** in /local:
     ```
     (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano Dockerfile
     ```
@@ -192,13 +191,11 @@ From Dockerfile a docker image will be build, tagged and run.
     ---
     **NOTE**
 
-    The base image is Ubuntu to work with Linux (but python base image I think also includes linux software).
-    The new working environment is /app. That is why the entrypoint.sh order includes /app in the config. (ENV: declare the name of environmental variables and WORKDIR: specifies the work environment)
-    Python and pip are installed
-    I need an environment, if not libraries such as scikit-learn won't work. The issue is because singularity doesn't work as docker regarding isolating the system. So, when using singularity, it is needed to install package or copy your data/files into a location where your user account has the permission. The normal place is "/opt", where all users have the rw access:  /opt is for "the installation of add-on application software packages".  /usr/local is "for use by the system administrator when installing software locally".
+    - The base image is Ubuntu to work with Linux (but python base image I think also includes linux software).
+    - The new working environment is /app. That is why the entrypoint.sh order includes /app in the config. (ENV: declare the name of environmental variables and WORKDIR: specifies the work environment)
+    - Python and pip are installed
+    - I need an environment, if not libraries such as scikit-learn won't work. The issue is because singularity doesn't work as docker regarding isolating the system. So, when using singularity, it is needed to install package or copy your data/files into a location where your user account has the permission. The normal place is "/opt", where all users have the rw access:  /opt is for "the installation of add-on application software packages".  /usr/local is "for use by the system administrator when installing software locally".
     - Then are followed the instructions to install datacube by the documentation: https://datacube-core.readthedocs.io/en/latest/ops/ubuntu.html#python-venv-installation. Moreover the documentation recommends making the installation in a virtual environment (odc), in this case we use: /opt. 
-
-
     - After that gdal is installed. Datacube doesn't need GDAL but we use it in our project.
     - Pip installs the requirements.txt libraries.
     - The final command is for reading the entrypoint.sh. You have to write all the filepath if you want to run the code (with Singularity is not possible writing: ./scripts/entrypoint.sh).
