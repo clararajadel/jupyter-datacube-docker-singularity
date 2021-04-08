@@ -9,7 +9,7 @@
 2. Locally: write Dockerfile, build Docker image and push to docker server
 3. Acube server: build and run singularity image
 
-## Generate key to connect with acube server
+# Generate key to connect with acube server
 - Keys are saved in .ssh folder: one is the public (end with .pub)
 - More info to customize your ssh key is found in: http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen.1?query=ssh-keygen&sec=1
 - Create key:
@@ -21,7 +21,7 @@
 ```
 - Get access to server (Emma)
 
-## Local set up
+# Local set up
 Docker image should be build locally because there is not super user root in the server to run Docker. 
 
 To write a Dockerfile and build the docker image some previous steps should be done:
@@ -42,5 +42,5 @@ To write a Dockerfile and build the docker image some previous steps should be d
    - write Dockerfile: all instructions writen to launch jupyter notebook, read files inside "nbs" and use enviroment with required libraries (included datacube)
    - Build, run, tag and push docker image
   
-  ### 1. Create workspace
+  ## 1. Create workspace
   
