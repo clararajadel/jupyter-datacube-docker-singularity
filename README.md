@@ -80,7 +80,7 @@ $ conda install ipykernel
  ```
 $ ipython -c "from notebook.auth import passwd; passwd()"
  ```
-- **Customize jupyter configuration** creating a jupyter.py file inside a "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration.
+- **Customize jupyter configuration** creating a jupyter.py file inside a "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration. All info about jupyter configuration can be found here https://jupyter-notebook.readthedocs.io/en/stable/config.html.
 ```
 $ mkdir conf
 $ nano jupyter.py
@@ -97,7 +97,7 @@ c.NotebookApp.allow_origin = '*' # put your public IP Address here or * to allow
 c.NotebookApp.ip = '*'
 c.NotebookApp.allow_remote_access = True
 c.NotebookApp.open_browser = False
-c.NotebookApp.password = u'argon2:$argon2id$v=19$m=10240,t=10,p=8$qJRSNqPjEqzc/O97Wzb/Rg$bP+S2ixO8Zh3N/h4HRobxg'
+c.NotebookApp.password = u'argon2:$argon2id$v=19$m=10240,t=10,p=8$qJRSNqPjEqzc/O97Wzb/Rg$bP+S2ixO8Zh3N/h4HRobxg' # password copied in "create password for jupyter"
 c.NotebookApp.port = int(os.environ.get("PORT", 5200))
 c.NotebookApp.allow_root = True
 c.NotebookApp.allow_password_change = True
