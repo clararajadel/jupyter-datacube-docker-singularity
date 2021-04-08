@@ -29,19 +29,20 @@ To write a Dockerfile and build the docker image some previous steps should be d
 **1. Create workspace:** folder to save all files together + virtual environment.
 
 **2. Jupyter notebook:** 
-    a) install jupyter notebook
+    
+    2.1. install jupyter notebook
   
-    b) make directory called "nbs" to save all notebooks (this step is important: docker will only read notebooks inside this folder)
+    2.2. make directory called "nbs" to save all notebooks (this step is important: docker will only read notebooks inside this folder)
   
-    c) change jupyter configuration 
+    2.3. change jupyter configuration 
     - to avoid authetication issues (password)
     - to be able to launch it locally from acube server
     - to launch notebooks inside "nbs" directory
 
 **3. Docker**
 
-    a) write Dockerfile: all instructions writen to launch jupyter notebook, read files inside "nbs" and use enviroment with required libraries (included datacube)
-    b) Build, run, tag and push docker image
+    3.1. write Dockerfile: all instructions writen to launch jupyter notebook, read files inside "nbs" and use enviroment with required libraries (included datacube)
+    3.2. Build, run, tag and push docker image
   
   ### Create workspace
   
