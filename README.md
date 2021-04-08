@@ -22,6 +22,7 @@
 - Get access to server (Emma)
 
 # Local set up
+## Intro
 Docker image should be build locally because there is not super user root in the server to run Docker. 
 
 To write a Dockerfile and build the docker image some previous steps should be done:
@@ -47,4 +48,6 @@ To write a Dockerfile and build the docker image some previous steps should be d
   ```
   (base) clara@LAPTOP-RKJGL9HN:~/projects$ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
-<!-- If you clone this repository you can avoid following steps -->
+- If you clone this repository you can avoid following steps.
+- Create virtual environment using conda:
+- 
