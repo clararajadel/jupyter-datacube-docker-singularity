@@ -105,11 +105,10 @@ c.NotebookApp.allow_password_change = True
 c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port', '80']
 ```
 Notes about jupyter.py config:
------------------------
-nbs: root directory
-allow_origin: to all (to launch it from the VM)
-port: 5200 (use one port that is not used by other users in the VM)
-allow_root: because the project is shared maybe I should change to False
+    - nbs: root directory
+    - allow_origin: to all (to launch it from the VM)
+    - port: 5200 (use one port that is not used by other users in the VM)
+    - allow_root: because the project is shared maybe I should change to False
 
 - Access jupyter notebook:
 ```
