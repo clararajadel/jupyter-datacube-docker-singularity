@@ -236,11 +236,13 @@ ssh -L 5200:localhost:5200 -R 5201:localhost:5000 boku@acube4floods.eodchosting.
 ```
 export SINGULARITY_NOHTTPS=1
 ```
-- **Build and run singularity image**. -B /eodc:/eodc : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option.
+- **Build and run singularity image**. 
 ```
 singularity build datacube.simg docker://localhost:5201/eodc-jupyter:1.0
 singularity exec -B /eodc:/eodc datacube.simg  /app/scripts/entrypoint.sh
 ```
+    - B /eodc:/eodc : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option.
+
 -  **Access your jupyter notebooks** at your browser at url: localhost:5200
 
 # Save new notebooks
