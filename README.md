@@ -1,8 +1,8 @@
 # Jupyter-Datacube-Docker-Singularity
-- Run Jupyter Notebooks in A4Floods VM (without super-user root). 
-- Install datacube to import sentinel images. 
-- Use Docker to automate the set up between different universities = users. (Having your jupyter server run as a container is a must as it allows one to seamlessly move their lab, as it were, from one cloud to another). 
-- Use Singularity to work in the ACube4Floods VM without super-user root.
+- Run **Jupyter Notebooks** in A4Floods VM (**virtual machine**) without super-user root. 
+- Install **datacube** to import sentinel images. 
+- Use **Docker** to automate the set up between different universities = users. (Having your jupyter server run as a container is a must as it allows one to seamlessly move their lab, as it were, from one cloud to another). 
+- Use **Singularity** to work in the ACube4Floods VM **without super-user root**.
 
 # Workflow
 1. Request access to Acube server (ssh key)
@@ -35,9 +35,9 @@ Docker image should be build locally because there is not super user root in the
    - install jupyter notebook
    - make directory called "nbs" to save all notebooks (this step is important: docker will only read notebooks inside this folder)
    - change jupyter configuration 
-        - avoid authetication issues (password)
-        - to be able to launch it locally from acube server
         - to launch notebooks inside "nbs" directory
+        - to avoid authetication issues (adding your own password)
+        - to launch it in local browser from acube server
 
 **3. Docker**
 
@@ -74,4 +74,44 @@ if necessary install ipykernel:
 ```
 
 - Make directory "nbs"
- 
+ ```
+ (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir nbs
+ ```
+ - Create password for jupyter. The terminal will ask you for a password and then will print a string. Copy this string to paste it later in the jupyter configuration.
+ ```
+ (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ ipython -c "from notebook.auth import passwd; passwd()"
+ ```
+- Customize jupyter configuration creating a jupyter.py file inside a "conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration.
+```
+(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir conf
+(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano jupyter.py
+```
+In jupyter.py:
+```
+import os
+c = get_config()
+# Kernel config
+c.IPKernelApp.pylab = 'inline'  # if you want plotting support always in your notebook
+# Notebook config
+c.NotebookApp.notebook_dir = 'nbs'
+c.NotebookApp.allow_origin = '*' # put your public IP Address here or * to allow all
+c.NotebookApp.ip = '*'
+c.NotebookApp.allow_remote_access = True
+c.NotebookApp.open_browser = False
+c.NotebookApp.password = u'argon2:$argon2id$v=19$m=10240,t=10,p=8$qJRSNqPjEqzc/O97Wzb/Rg$bP+S2ixO8Zh3N/h4HRobxg'
+c.NotebookApp.port = int(os.environ.get("PORT", 5200))
+c.NotebookApp.allow_root = True
+c.NotebookApp.allow_password_change = True
+c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port', '80']
+```
+Notes about jupyter.py config:
+-----------------------
+nbs: root directory
+allow_origin: to all (to launch it from the VM)
+port: 5200 (use one port that is not used by other users in the VM)
+allow_root: because the project is shared maybe I should change to False
+
+- Access jupyter notebook:
+```
+(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ jupyter notebook --config=./conf/jupyter
+```
