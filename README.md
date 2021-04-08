@@ -42,5 +42,5 @@ To write a Dockerfile and build the docker image some previous steps should be d
    - write Dockerfile: all instructions writen to launch jupyter notebook, read files inside "nbs" and use enviroment with required libraries (included datacube)
    - Build, run, tag and push docker image
   
-  #### 1. Create workspace
+  ### 1. Create workspace
   
