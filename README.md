@@ -47,22 +47,22 @@ Docker image should be build locally because there is not super user root in the
    - Build, run, tag and push docker image in docker server
   
   ## 1. Create workspace
-  - Clone this repository (if cloned you can avoid following steps):
+  - **Clone this repository** (if cloned you can avoid following steps):
   ```
   (base) clara@LAPTOP-RKJGL9HN:~/projects$ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
-- Create directories for local files and acube server files.
+- **Create directories** for local files and acube server files.
 ```
 (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ mkdir local
 (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ mkdir server
 ```
-- Create and activate virtual environment named "jupy-docker" using conda (all path is written because the environment is saved out from conda /envs):
+- **Create and activate virtual environment** named "jupy-docker" using conda (all path is written because the environment is saved out from conda /envs):
 ```
 (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 ```
 ## 2. Jupyter notebook
-- Install jupyter and add ipykernel. Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks.
+- **Install jupyter and add ipykernel**. Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks.
 ```
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install jupyter
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ python -m ipykernel install --user --name jupy-docker --display-name "Python (jupy-docker)"
@@ -72,16 +72,16 @@ if necessary install ipykernel:
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install ipykernel
 ```
 
-- Make directory "nbs" inside "local" directory
+- **Make directory "nbs"** inside "local" directory
  ```
  (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ cd local
  (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir nbs
  ```
- - Create password for jupyter. The terminal will ask you for a password and then will print a string. Copy this string to paste it later in the jupyter configuration.
+ - **Create password for jupyter**. The terminal will ask you for a password and then will print a string. Copy this string to paste it later in the jupyter configuration.
  ```
  (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ ipython -c "from notebook.auth import passwd; passwd()"
  ```
-- Customize jupyter configuration creating a jupyter.py file inside a "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration.
+- **Customize jupyter configuration** creating a jupyter.py file inside a "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration.
 ```
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir conf
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano jupyter.py
@@ -111,11 +111,19 @@ c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port',
         - port: 5200 (use one port that is not used by other users in the VM)
         - allow_root: because the project is shared maybe I should change to False
 
-- Access jupyter notebook:
+- **Access jupyter notebook**:
 ```
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ jupyter notebook --config=./conf/jupyter
 ```
 
 ## 3. Docker
-- Install Docker in your local machine. Docker is installed out from this github repository so files are not visible for you. I'm using Ubuntu WSL2 in Windows 10 so I followed this documentation https://docs.docker.com/engine/install/ubuntu/. Note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/. 
-- 
+First we will write a Dockerfile. This Dockerfile will:
+1. Install Ubuntu
+2. Install python and pip
+3. Install all required packages. For that create a file "requirements.txt" with all package names
+4. Read an entrypoint.sh file with the order to launch jupyter notebook according to configuration in jupyter.py
+
+From Dockerfile a docker image will be build, tagged and run.
+
+- **First: install Docker in your local machine**. Docker is installed out from this github repository so files are not visible for you. *I'm using Ubuntu WSL2 in Windows 10 so I followed this documentation https://docs.docker.com/engine/install/ubuntu/. Note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/.*
+- **List libraries to install**: in a file named "requirements.txt"
