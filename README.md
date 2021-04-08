@@ -4,7 +4,7 @@
 - Use Docker to automate the set up between different universities = users. (Having your jupyter server run as a container is a must as it allows one to seamlessly move their lab, as it were, from one cloud to another). 
 - Use Singularity to work in the ACube4Floods VM without super-user root.
 
-## Workflow
+# Workflow
 1. Request access to Acube server (ssh key)
 2. Locally: write Dockerfile, build Docker image and push to docker server
 3. Acube server: build and run singularity image
@@ -42,5 +42,5 @@ To write a Dockerfile and build the docker image some previous steps should be d
    - write Dockerfile: all instructions writen to launch jupyter notebook, read files inside "nbs" and use enviroment with required libraries (included datacube)
    - Build, run, tag and push docker image
   
-  ### 1. Create workspace
+  #### 1. Create workspace
   
