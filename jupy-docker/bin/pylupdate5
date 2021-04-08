@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker/bin/python -m PyQt5.pylupdate_main ${1+"$@"}
