@@ -26,9 +26,7 @@ if necessary make .ssh directory:
 
 # Local set up
 ## Intro (theory)
-Docker image should be build locally because there is not super user root in the server to run Docker. 
-
-To write a Dockerfile and build the docker image some previous steps should be done:
+Docker image should be build locally because there is not super user root in the server to run Docker. To write a Dockerfile and build the docker image some previous steps should be done:
 
 **1. Create workspace:** folder to save all files together + virtual environment.
 
