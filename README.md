@@ -115,3 +115,7 @@ c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port',
 ```
 (/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ jupyter notebook --config=./conf/jupyter
 ```
+
+## 3. Docker
+- Install Docker in your local machine. I'm using ubuntu in Windows 10 and followed this documentation (https://docs.docker.com/engine/install/ubuntu/). Docker is installed out from this github repository.
+- 
