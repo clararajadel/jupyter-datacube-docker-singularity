@@ -125,5 +125,82 @@ First we will write a Dockerfile. This Dockerfile will:
 
 From Dockerfile a docker image will be build, tagged and run.
 
-- **First: install Docker in your local machine**. Docker is installed out from this github repository so files are not visible for you. *I'm using Ubuntu WSL2 in Windows 10 so I followed this documentation https://docs.docker.com/engine/install/ubuntu/. Note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/.*
-- **List libraries to install**: in a file named "requirements.txt"
+- **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. *I'm using Ubuntu WSL2 in Windows 10 so I followed this documentation https://docs.docker.com/engine/install/ubuntu/. Note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/.*
+- **Dockerfile**:
+    - Create requirements.txt in /local with a list of required libraries:
+    ```
+    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano requirements.txt
+    ```
+    - Write inside requirements.txt:
+    ```
+    jupyter
+    numpy
+    matplotlib
+    random2
+    scikit-learn
+    ```
+    - Create entrypoint.sh in /local/scripts (create scripts):
+    ```
+    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ mkdir scripts
+    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ cd scripts
+    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local/scripts$ nano entrypoint.sh
+    ```
+    - In entrypoint.sh add the order to open Jupyter Notebook following jupyter.py config. /app path is used because the environment in the Dockerfile will be named /app and singularity needs the entire path to build the image.
+    ```
+    /usr/local/bin/jupyter-notebook --config=/app/conf/jupyter.py
+    ```
+    - Create a file named Dockerfile in /local:
+    ```
+    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano Dockerfile
+    ```
+    - Inside Dockerfile:
+    ```
+    # BASE IMAGE: UBUNTU
+    FROM ubuntu:latest
+
+    # WORKSPACE
+    ENV APP_HOME /app
+    WORKDIR ${APP_HOME}
+
+    COPY . ./
+
+    # INSTALL PYTHON AND PIP
+    RUN apt-get update && apt-get install -y python3 python3-pip
+    RUN python3 -m pip install pip --upgrade
+
+    # INSTALL SOFTWARE REQUIRED BY DATACUBE
+    RUN apt-get install -y build-essential python3-dev python3-pip python3-venv libyaml-dev libpq-dev
+    RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libproj-dev proj-bin libgdal-dev
+    RUN apt-get install -y libgeos-dev libgeos++-dev libudunits2-dev libnetcdf-dev libhdf4-alt-dev libhdf5-serial-dev gfortran
+    RUN apt-get install -y postgresql-doc libhdf5-doc netcdf-doc libgdal-doc
+    RUN apt-get install -y hdf5-tools netcdf-bin gdal-bin pgadmin3
+
+    # ADD DATACUBE
+    RUN python3 -m pip install -U pip setuptools
+    RUN python3 -m pip install -U wheel 'setuptools_scm[toml]' cython
+    RUN python3 -m pip install -U 'pyproj==2.*' 'datacube[all]' --no-binary=rasterio,pyproj,shapely,fiona,psycopg2,netCDF4,h5py
+
+    # GDAL
+    RUN python3 -m pip install GDAL==$(gdal-config --version)
+
+    # INSTALL REST OF LIBRARIES
+    RUN python3 -m pip install -r ./requirements.txt
+
+    # LAUNCH NOTEBOOKS
+    CMD ["/app/scripts/entrypoint.sh"]
+    ```
+    ---
+    **NOTE**
+
+    The base image is Ubuntu to work with Linux (but python base image I think also includes linux software).
+    The new working environment is /app. That is why the entrypoint.sh order includes /app in the config. (ENV: declare the name of environmental variables and WORKDIR: specifies the work environment)
+    Python and pip are installed
+    I need an environment, if not libraries such as scikit-learn won't work. The issue is because singularity doesn't work as docker regarding isolating the system. So, when using singularity, it is needed to install package or copy your data/files into a location where your user account has the permission. The normal place is "/opt", where all users have the rw access:  /opt is for "the installation of add-on application software packages".  /usr/local is "for use by the system administrator when installing software locally".
+    - Then are followed the instructions to install datacube by the documentation: https://datacube-core.readthedocs.io/en/latest/ops/ubuntu.html#python-venv-installation. Moreover the documentation recommends making the installation in a virtual environment (odc), in this case we use: /opt. 
+
+
+    - After that gdal is installed. Datacube doesn't need GDAL but we use it in our project.
+    - Pip installs the requirements.txt libraries.
+    - The final command is for reading the entrypoint.sh. You have to write all the filepath if you want to run the code (with Singularity is not possible writing: ./scripts/entrypoint.sh).
+
+    ---
