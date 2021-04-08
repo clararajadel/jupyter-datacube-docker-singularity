@@ -80,9 +80,10 @@ $ conda install ipykernel
  ```
 $ ipython -c "from notebook.auth import passwd; passwd()"
  ```
-- **Customize jupyter configuration** creating a jupyter.py file inside a "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration. All info about jupyter configuration can be found here https://jupyter-notebook.readthedocs.io/en/stable/config.html.
+- **Customize jupyter configuration** creating jupyter.py file inside "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration. All info about jupyter configuration can be found here https://jupyter-notebook.readthedocs.io/en/stable/config.html.
 ```
 $ mkdir conf
+$ cd conf
 $ nano jupyter.py
 ```
 In jupyter.py:
@@ -209,35 +210,35 @@ From Dockerfile a docker image will be build, tagged and run.
     ---
 - **Build the image**: In the terminal, inside the folder where is the Dockerfile type:
 ```
-docker build -t eodc-jupyter -f Dockerfile .
+$ docker build -t eodc-jupyter -f Dockerfile .
 ```
 - **Create the resgistry image** (this step is in the A4Cube ppt of Dockers). If you avoid this step it won't work.
 ```
-docker run -d -p 5000:5000 --restart=always --name registry registry:2
+$ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
 - **Tag your image** with the version (creating "other image": same ID, different name). This is the image to push in the docker server. The port of the computer from where is launched is specified.
 ```
-docker tag eodc-jupyter localhost:5000/eodc-jupyter:1.0
+$ docker tag eodc-jupyter localhost:5000/eodc-jupyter:1.0
 ```
 - Finally, **push the docker image** to the server and it will become available in other machine through docker server.
 ```
-docker push localhost:5000/eodc-jupyter:1.0
+$ docker push localhost:5000/eodc-jupyter:1.0
 ```
 
 # Run singularity in server
 - **Acces to A4Floods VM**. You can do local and remote port forwarding in one command --> write in the terminal:
 ```
-ssh -L 5200:localhost:5200 -R 5201:localhost:5000 boku@acube4floods.eodchosting.eu
+$ ssh -L 5200:localhost:5200 -R 5201:localhost:5000 boku@acube4floods.eodchosting.eu
 ```
 With above command, you bind your local port 5000(docker-registry port) to A4F VM port 5201, and bind A4F VM 5200 to your local 5200.
 
 -  **Clone this repository**: jupyter-datacube-docker-singularity repository.
+```
+ $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
  ```
-  $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
-  ```
 - **Allow singularity work in server** running the following command. (I did a similar step for running docker in Ubuntu for Windows, see in install Docker section)
 ```
-export SINGULARITY_NOHTTPS=1
+$ export SINGULARITY_NOHTTPS=1
 ```
 - **Build and run singularity image**. 
 ```
