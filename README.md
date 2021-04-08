@@ -22,7 +22,7 @@
 - Get access to server (Emma)
 
 # Local set up
-## Intro
+## Intro (theory)
 Docker image should be build locally because there is not super user root in the server to run Docker. 
 
 To write a Dockerfile and build the docker image some previous steps should be done:
@@ -34,20 +34,35 @@ To write a Dockerfile and build the docker image some previous steps should be d
    - install jupyter notebook
    - make directory called "nbs" to save all notebooks (this step is important: docker will only read notebooks inside this folder)
    - change jupyter configuration 
-    - avoid authetication issues (password)
-    - to be able to launch it locally from acube server
-    - to launch notebooks inside "nbs" directory
+        - avoid authetication issues (password)
+        - to be able to launch it locally from acube server
+        - to launch notebooks inside "nbs" directory
 
 **3. Docker**
 
-   - write Dockerfile: all instructions writen to launch jupyter notebook, read files inside "nbs" and use enviroment with required libraries (included datacube)
-   - Build, run, tag and push docker image
+   - write Dockerfile: all instructions writen to: 
+        - launch jupyter notebook 
+        - read files inside "nbs" 
+        - use enviroment with required libraries (included datacube)
+   - Build, run, tag and push docker image in docker server
   
   ## 1. Create workspace
-  - Clone this repository:
+  - Clone this repository (if cloned you can avoid following steps):
   ```
   (base) clara@LAPTOP-RKJGL9HN:~/projects$ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
-- If you clone this repository you can avoid following steps.
-- Create virtual environment using conda:
-- 
+- Divide workspace for local files and acube server files.
+```
+
+- Create virtual environment using conda (because the environment is saved out from conda /envs all path should be written):
+```
+ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
+ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
+```
+```
+## 2. Jupyter notebook
+- Install jupyter and add ipykernel
+```
+conda install jupyter
+(/home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity$ conda install jupyter
+```
