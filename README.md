@@ -13,12 +13,12 @@
 ## Table of Contents  
 * [Generate key to connect with acube server](#Generate-key-to-connect-with-acube-server)
 * [Local set up](#Local-set-up)
-   * [1. Create workspace](#Create_workspace)
-   * [2. Jupyter notebook](#2._Jupyter_notebook)
-   * [3. Docker](#3._Docker)
-      * [3.1. Dockerfile](#Dockerfile)
-      * [3.2.Docker Image](#Docker_Image) 
-* [Run singularity in server ](#Run-singularity-in-server )
+   * [Create workspace](#Create_workspace)
+   * [Jupyter notebook](#Jupyter_notebook)
+   * [Docker](#3Docker)
+      * [Dockerfile](#Dockerfile)
+      * [Docker Image](#Docker_Image) 
+* [Run singularity in server](#Run-singularity-in-server )
 
 # Generate key to connect with acube server
 - Keys are saved in .ssh folder: one is the public (end with .pub). More info to customize your ssh key is found in: http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen.1?query=ssh-keygen&sec=1
@@ -56,7 +56,7 @@ Docker image should be build locally because there is not super user root in the
         - launching jupyter notebooks inside "nbs" 
    - Build, run, tag and push docker image in docker server
   
-  ## 1. Create workspace
+  ## Create workspace
   - **Clone this repository** (if cloned you can avoid some of following steps):
   ```
   $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
@@ -71,7 +71,7 @@ $ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-
 $ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 ```
 (all path is written because the environment is saved out from default path: /miniconda3/envs)
-## 2. Jupyter notebook
+## Jupyter notebook
 - **Install jupyter and add ipykernel**. Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks.
 ```
 $ conda install jupyter
@@ -128,7 +128,7 @@ c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port',
 $ jupyter notebook --config=./conf/jupyter
 ```
 
-## 3._Docker
+## Docker
 First we will write a Dockerfile. This Dockerfile will contain instructions to:
 1. Install Ubuntu
 2. Install python and pip
@@ -137,7 +137,7 @@ First we will write a Dockerfile. This Dockerfile will contain instructions to:
 
 From Dockerfile a docker image will be build, tagged and run.
 
-### 3.1. Dockerfile
+### Dockerfile
 
 - **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. 
 ---
@@ -228,7 +228,7 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
     - The final command is for reading the entrypoint.sh. You have to write all the filepath if you want to run the code (with Singularity is not possible writing: ./scripts/entrypoint.sh).
     - All commands that include <DEBIAN_FRONTEND=noninteractive> are created to avoid interaction while building the image.
     ---
-### 3.2. Docker Image
+### Docker Image
 - **Build the image**: In the terminal, inside the folder where is the Dockerfile type:
 ```
 $ docker build -t eodc-jupyter -f Dockerfile .
