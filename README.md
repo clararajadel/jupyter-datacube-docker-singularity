@@ -54,11 +54,12 @@ Docker image should be build locally because there is not super user root in the
 ```
 $ mkdir local
 ```
-- **Create and activate virtual environment** named "jupy-docker" using conda (all path is written because the environment is saved out from conda /envs). This step is not mandatory, you can use an existing environment but I do not recommend it.
+- **Create and activate virtual environment** named "jupy-docker" using conda. The environment is created to use jupyter locally (without datacube) and verify that the new configuration works properly. This step is not mandatory, you can use an existing environment but I do not recommend it.
 ```
 $ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 $ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 ```
+(all path is written because the environment is saved out from default path: /miniconda3/envs)
 ## 2. Jupyter notebook
 - **Install jupyter and add ipykernel**. Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks.
 ```
