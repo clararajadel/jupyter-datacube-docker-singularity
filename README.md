@@ -50,7 +50,7 @@ Docker image should be build locally because there is not super user root in the
   ```
   $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
-- **Create local workspace**. This folder will contain all files required to build the docker image. Later it will be copied (or cloned) in the VM to have access also to this files from the VM.
+- **Create local workspace**. This folder will contain all files required to build the docker image. Later it will be copied (using scp) or cloned (using git) in the VM to have access to these files from the VM.
 ```
 $ mkdir local
 ```
