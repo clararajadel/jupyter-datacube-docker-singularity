@@ -35,15 +35,14 @@ Docker image should be build locally because there is not super user root in the
    - make directory called "nbs" to save all notebooks (this step is important: docker will only read notebooks inside this folder)
    - change jupyter configuration for:
         - launching notebooks contained inside "nbs" directory
-        - avoiding authetication issues (adding your own password)
+        - avoiding authentication issues (adding your own password)
         - launching notebooks in local browser from acube server
 
 **3. Docker**
 
-   - write Dockerfile: all instructions writen to: 
-        - launch jupyter notebook 
-        - read files inside "nbs" 
-        - use enviroment with required libraries (included datacube)
+   - write Dockerfile: file with instructions written for: 
+        - creating an enviroment with all required libraries (included datacube)
+        - launching jupyter notebooks inside "nbs" 
    - Build, run, tag and push docker image in docker server
   
   ## 1. Create workspace
