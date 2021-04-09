@@ -3,6 +3,7 @@ FROM ubuntu:latest
 
 
 # WORKING DIRECTORY
+ENV DEBIAN_FRONTEND=noninteractive
 ENV APP_HOME /app
 WORKDIR ${APP_HOME}
 
