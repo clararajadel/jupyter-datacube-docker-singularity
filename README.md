@@ -128,7 +128,7 @@ c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port',
 $ jupyter notebook --config=./conf/jupyter
 ```
 
-## 3. Docker
+## 3._Docker
 First we will write a Dockerfile. This Dockerfile will contain instructions to:
 1. Install Ubuntu
 2. Install python and pip
