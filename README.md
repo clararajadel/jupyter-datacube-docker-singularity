@@ -46,7 +46,7 @@ Docker image should be build locally because there is not super user root in the
    - Build, run, tag and push docker image in docker server
   
   ## 1. Create workspace
-  - **Clone this repository** (if cloned you can avoid following steps):
+  - **Clone this repository** (if cloned you can avoid some of following steps):
   ```
   $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
