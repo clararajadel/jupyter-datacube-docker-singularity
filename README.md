@@ -180,6 +180,16 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
     ```
     - Inside Dockerfile:
     ```
+  # BASE IMAGE
+  FROM ubuntu:latest
+
+
+  # WORKING DIRECTORY
+  ENV APP_HOME /app
+  WORKDIR ${APP_HOME}
+
+
+  # PASTE ALL FILES IN THE WORKING DIRECTORY
     COPY . ./
 
 
