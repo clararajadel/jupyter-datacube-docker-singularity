@@ -11,7 +11,7 @@
 3. Acube server: build and run singularity image
 
 ## Table of Contents  
-* [Generate-key-to-connect-with-acube-server](#Generate-key-to-connect-with-acube-server)  
+* [Generate key to connect with acube server](#Generate-key-to-connect-with-acube-server)  
 * [Local set up](#Local set up) 
 * [Run singularity in server ](#Run singularity in server )
 
