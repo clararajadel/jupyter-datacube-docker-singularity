@@ -1,4 +1,5 @@
 #!/bin/bash
+
 cd /app/opt
 source venv/bin/activate
 pip install ipykernel -t /app/opt/venv/bin/
