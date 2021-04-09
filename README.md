@@ -261,12 +261,13 @@ With above command, you bind your local port 5000(docker-registry port) to A4F V
 ```
 $ export SINGULARITY_NOHTTPS=1
 ```
-- **Build and run singularity image**. 
+- **Build and run singularity image**. You should build your image in the same folder as "nbs" folder.
 
     - *- B /eodc:/eodc* : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option.
 ```
-singularity build eodc-jupyter.simg docker://localhost:5201/eodc-jupyter:1.0
-singularity exec -B /eodc:/eodc eodc-jupyter.simg  /app/scripts/entrypoint.sh
+$ cd jupyter-datacube-docker-singularity/local/
+$ singularity build eodc-jupyter.simg docker://localhost:5201/eodc-jupyter:1.0
+$ singularity exec -B /eodc:/eodc eodc-jupyter.simg  /app/scripts/entrypoint.sh
 ```
 I can not push the .simg image because I cannot instal git-lfs (I can not use sudo)
 -  **Access your jupyter notebooks** at your browser at url: localhost:5200
