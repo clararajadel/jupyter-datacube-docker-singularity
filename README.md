@@ -1,13 +1,21 @@
 # Jupyter-Datacube-Docker-Singularity
+## Objective
 - Run **Jupyter Notebooks** in A4Floods VM (**virtual machine**) without super-user root. 
 - Install **datacube** to import sentinel images. 
 - Use **Docker** to automate the set up between different universities = users. (Having your jupyter server run as a container is a must as it allows one to seamlessly move their lab, as it were, from one cloud to another). 
 - Use **Singularity** to work in the ACube4Floods VM **without super-user root**.
 
-# Workflow
+## Workflow
 1. Request access to Acube server (ssh key)
 2. Locally: write Dockerfile, build Docker image and push to docker server
 3. Acube server: build and run singularity image
+
+## Table of Contents  
+[Generate key to connect with acube server](#Generate key to connect with acube server)  
+[Local set up](#Local set up) 
+[Run singularity in server ](#Run singularity in server )
+...snip...    
+<a name="Generate key to connect with acube server"/>
 
 # Generate key to connect with acube server
 - Keys are saved in .ssh folder: one is the public (end with .pub). More info to customize your ssh key is found in: http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen.1?query=ssh-keygen&sec=1
