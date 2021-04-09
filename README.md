@@ -12,7 +12,11 @@
 
 ## Table of Contents  
 * [Generate key to connect with acube server](#Generate-key-to-connect-with-acube-server)
-    ** [1. Create workspace] (#1._Create_workspace)   
+    ** [1. Create workspace](#1._Create_workspace)
+    ** [2. Jupyter notebook](#2._Jupyter_notebook)
+    ** [3. Docker](#Docker)
+      *** [3.1. Dockerfile](#Dockerfile)
+      *** [3.2.Docker Image](#Docker_Image)
 * [Local set up](#Local-set-up) 
 * [Run singularity in server ](#Run-singularity-in-server )
 
@@ -133,6 +137,8 @@ First we will write a Dockerfile. This Dockerfile will contain instructions to:
 
 From Dockerfile a docker image will be build, tagged and run.
 
+### 3.1. Dockerfile
+
 - **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. 
 ---
 
@@ -222,6 +228,7 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
     - The final command is for reading the entrypoint.sh. You have to write all the filepath if you want to run the code (with Singularity is not possible writing: ./scripts/entrypoint.sh).
     - All commands that include <DEBIAN_FRONTEND=noninteractive> are created to avoid interaction while building the image.
     ---
+### 3.2. Docker Image
 - **Build the image**: In the terminal, inside the folder where is the Dockerfile type:
 ```
 $ docker build -t eodc-jupyter -f Dockerfile .
