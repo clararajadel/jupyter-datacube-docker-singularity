@@ -272,4 +272,4 @@ I can not push the .simg image because I cannot instal git-lfs (I can not use su
 -  **Access your jupyter notebooks** at your browser at url: localhost:5200
 
 # Save new notebooks
-
+https://stackoverflow.com/questions/47418760/how-to-save-changes-in-read-only-jupyter-notebook
