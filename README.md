@@ -254,12 +254,11 @@ With above command, you bind your local port 5000(docker-registry port) to A4F V
 $ export SINGULARITY_NOHTTPS=1
 ```
 - **Build and run singularity image**. 
+   - - B /eodc:/eodc : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option.
 ```
-singularity build datacube.simg docker://localhost:5201/eodc-jupyter:1.0
-singularity exec -B /eodc:/eodc datacube.simg  /app/scripts/entrypoint.sh
+singularity build eodc-jupyter.simg docker://localhost:5201/eodc-jupyter:1.0
+singularity exec -B /eodc:/eodc eodc-jupyter.simg  /app/scripts/entrypoint.sh
 ```
-
-   (- B /eodc:/eodc : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option.)
 
 -  **Access your jupyter notebooks** at your browser at url: localhost:5200
 
