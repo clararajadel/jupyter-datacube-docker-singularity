@@ -152,7 +152,8 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
     $ cd scripts
     $ nano entrypoint.sh
     ```
-    - In entrypoint.sh add the order to open Jupyter Notebook following jupyter.py config. /app path is used because the environment in the Dockerfile will be named /app and singularity needs the entire path to build the image.
+    - In entrypoint.sh add the order to open Jupyter Notebook following jupyter.py config. 
+    - /app path is used because the environment in the Dockerfile will be named /app and singularity needs the entire path to build the image.
     ```
     /usr/local/bin/jupyter-notebook --config=/app/conf/jupyter.py
     ```
