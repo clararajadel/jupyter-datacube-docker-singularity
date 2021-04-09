@@ -25,12 +25,12 @@
 - Create key:
 
 ```
-(base) clara@LAPTOP-RKJGL9HN:~$ cd .ssh
-(base) clara@LAPTOP-RKJGL9HN:~/.ssh$ ssh-keygen -t rsa
+$ cd .ssh
+$ ssh-keygen -t rsa
 ```
 if necessary make .ssh directory:
 ```
-(base) clara@LAPTOP-RKJGL9HN:~$ mkdir .ssh
+$ mkdir .ssh
 ```
 - Get access to server (Emma)
 
