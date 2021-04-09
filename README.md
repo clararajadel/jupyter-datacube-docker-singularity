@@ -112,11 +112,10 @@ c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port',
  - allow_root: because the project is shared maybe I should change to False
  ---
 
-- **Access jupyter notebook and save a .ipynb**:
+- **Access jupyter notebook and save a .ipynb**: Write a small code in a .ipynb file and save it in the "nbs" folders. This step is necessary because if not "nbs" folder won't be cloned.
 ```
 $ jupyter notebook --config=./conf/jupyter
 ```
-Write a small code in a .ipynb file and save it in the "nbs" folders. This step is necessary because if not "nbs" folder won't be cloned. Moreover, it verifies that this set up works properly.
 
 ## 3. Docker
 First we will write a Dockerfile. This Dockerfile will:
