@@ -176,7 +176,7 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
     ```
 - **Create a file named Dockerfile** in /local:
     ```
-    (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano Dockerfile
+    $ nano Dockerfile
     ```
     - Inside Dockerfile:
     ```
