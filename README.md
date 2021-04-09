@@ -11,13 +11,11 @@
 3. Acube server: build and run singularity image
 
 ## Table of Contents  
-* [Generate key to connect with acube server](#Generate key to connect with acube server)  
+* [Generate-key-to-connect-with-acube-server](#Generate-key-to-connect-with-acube-server)  
 * [Local set up](#Local set up) 
 * [Run singularity in server ](#Run singularity in server )
-...snip...    
-<a name="Generate key to connect with acube server"/>
 
-# Generate key to connect with acube server
+# Generate-key-to-connect-with-acube-server
 - Keys are saved in .ssh folder: one is the public (end with .pub). More info to customize your ssh key is found in: http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen.1?query=ssh-keygen&sec=1
 - Create key:
 
