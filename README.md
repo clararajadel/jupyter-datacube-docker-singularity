@@ -118,11 +118,11 @@ $ jupyter notebook --config=./conf/jupyter
 ```
 
 ## 3. Docker
-First we will write a Dockerfile. This Dockerfile will:
+First we will write a Dockerfile. This Dockerfile will contain instructions to:
 1. Install Ubuntu
 2. Install python and pip
-3. Install all required packages. For that create a file "requirements.txt" with all package names
-4. Read an entrypoint.sh file with the order to launch jupyter notebook according to configuration in jupyter.py
+3. Install all required packages --> create a file "requirements.txt" with all package names
+4. Read an entrypoint.sh file to launch jupyter notebook according to configuration in jupyter.py --> create file "entrypoint.sh"
 
 From Dockerfile a docker image will be build, tagged and run.
 
