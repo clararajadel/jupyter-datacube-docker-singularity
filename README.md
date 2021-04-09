@@ -180,40 +180,52 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
     ```
     - Inside Dockerfile:
     ```
-    # BASE IMAGE: UBUNTU
-    FROM ubuntu:latest
+  # BASE IMAGE
+  FROM ubuntu:latest
 
-    # WORKSPACE
-    ENV DEBIAN_FRONTEND=noninteractive
-    ENV APP_HOME /app
-    WORKDIR ${APP_HOME}
 
+  # WORKING DIRECTORY
+  ENV APP_HOME /app
+  WORKDIR ${APP_HOME}
+
+
+  # PASTE ALL FILES IN THE WORKING DIRECTORY
     COPY . ./
 
-    # INSTALL PYTHON AND PIP
-    RUN apt-get update && apt-get install -y python3 python3-pip
-    RUN python3 -m pip install pip --upgrade
 
-    # INSTALL SOFTWARE REQUIRED BY DATACUBE
-    RUN apt-get install -y build-essential python3-dev python3-pip python3-venv libyaml-dev libpq-dev
-    RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libproj-dev proj-bin libgdal-dev
-    RUN apt-get install -y libgeos-dev libgeos++-dev libudunits2-dev libnetcdf-dev libhdf4-alt-dev libhdf5-serial-dev gfortran
-    RUN apt-get install -y postgresql-doc libhdf5-doc netcdf-doc libgdal-doc
-    RUN apt-get install -y hdf5-tools netcdf-bin gdal-bin pgadmin3
+  # INSTALL PYTHON AND PIP
+  RUN apt-get update && apt-get install -y python3 python3-pip
+  RUN python3 -m pip install pip --upgrade
 
-    # ADD DATACUBE
-    RUN python3 -m pip install -U pip setuptools
-    RUN python3 -m pip install -U wheel 'setuptools_scm[toml]' cython
-    RUN python3 -m pip install -U 'pyproj==2.*' 'datacube[all]' --no-binary=rasterio,pyproj,shapely,fiona,psycopg2,netCDF4,h5py
 
-    # GDAL
-    RUN python3 -m pip install GDAL==$(gdal-config --version)
+  # INSTALL SOFTWARE REQUIRED BY DATACUBE
+  RUN apt-get install -y build-essential python3-dev python3-pip python3-venv libyaml-dev libpq-dev
+  RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libproj-dev proj-bin libgdal-dev
+  RUN apt-get install -y libgeos-dev libgeos++-dev libudunits2-dev libnetcdf-dev libhdf4-alt-dev libhdf5-serial-dev gfortran
+  RUN apt-get install -y postgresql-doc libhdf5-doc netcdf-doc libgdal-doc
+  RUN apt-get install -y hdf5-tools netcdf-bin gdal-bin pgadmin3
 
-    # INSTALL REST OF LIBRARIES
-    RUN python3 -m pip install -r ./requirements.txt
 
-    # LAUNCH NOTEBOOKS
-    CMD ["/app/scripts/entrypoint.sh"]
+  # CREATE VIRTUAL ENVIRONMENT
+  RUN python3 -m venv /app/opt/venv
+
+
+  # ADD DATACUBE
+  RUN /app/opt/venv/bin/pip install -U pip setuptools
+  RUN /app/opt/venv/bin/pip install -U wheel 'setuptools_scm[toml]' cython
+  RUN /app/opt/venv/bin/pip install -U 'pyproj==2.*' 'datacube[all]' --no-binary=rasterio,pyproj,shapely,fiona,psycopg2,netCDF4,h5py
+
+
+  # GDAL
+  RUN /app/opt/venv/bin/pip install GDAL==$(gdal-config --version)
+
+
+  # INSTALL REST OF LIBRARIES
+  RUN /app/opt/venv/bin/pip install -r ./requirements.txt
+  #RUN /opt/venv/bin/python3 -m pip install -r ./requirements.txt
+
+  # CALL NOTEBOOKS
+  CMD ["/app/scripts/entrypoint.sh"]
     ```
     ---
     **Notes about Dockerfile**
@@ -261,12 +273,13 @@ With above command, you bind your local port 5000(docker-registry port) to A4F V
 ```
 $ export SINGULARITY_NOHTTPS=1
 ```
-- **Build and run singularity image**. 
+- **Build and run singularity image**. You should build your image in the same folder as "nbs" folder.
 
     - *- B /eodc:/eodc* : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option.
 ```
-singularity build eodc-jupyter.simg docker://localhost:5201/eodc-jupyter:1.0
-singularity exec -B /eodc:/eodc eodc-jupyter.simg  /app/scripts/entrypoint.sh
+$ cd jupyter-datacube-docker-singularity/local/
+$ singularity build eodc-jupyter.simg docker://localhost:5201/eodc-jupyter:1.0
+$ singularity exec -B /eodc:/eodc eodc-jupyter.simg  /app/scripts/entrypoint.sh
 ```
 I can not push the .simg image because I cannot instal git-lfs (I can not use sudo)
 -  **Access your jupyter notebooks** at your browser at url: localhost:5200
