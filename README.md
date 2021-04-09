@@ -126,7 +126,13 @@ First we will write a Dockerfile. This Dockerfile will contain instructions to:
 
 From Dockerfile a docker image will be build, tagged and run.
 
-- **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. *I'm using Ubuntu WSL2 in Windows 10 so I followed this documentation https://docs.docker.com/engine/install/ubuntu/. Note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/.*
+- **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. 
+---
+
+**Note: installing Docker for Ubuntu in Windows 10** 
+I'm using Ubuntu WSL2 in Windows 10 so I followed this documentation https://docs.docker.com/engine/install/ubuntu/. Note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/.
+
+---
 - **Create requirements.txt** in /local with a list of required libraries:
     ```
     (base) clara@LAPTOP-RKJGL9HN:~/projects/jupyter-datacube-docker-singularity/local$ nano requirements.txt
