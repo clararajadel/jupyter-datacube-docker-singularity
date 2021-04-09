@@ -268,7 +268,7 @@ $ export SINGULARITY_NOHTTPS=1
 singularity build eodc-jupyter.simg docker://localhost:5201/eodc-jupyter:1.0
 singularity exec -B /eodc:/eodc eodc-jupyter.simg  /app/scripts/entrypoint.sh
 ```
-
+I can not push the .simg image because I cannot instal git-lfs (I can not use sudo)
 -  **Access your jupyter notebooks** at your browser at url: localhost:5200
 
 # Save new notebooks
