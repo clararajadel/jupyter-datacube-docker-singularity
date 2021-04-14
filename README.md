@@ -13,11 +13,11 @@
 ## Table of Contents  
 * [Generate key to connect with acube server](#Generate-key-to-connect-with-acube-server)
 * [Local set up](#Local-set-up)
-   * [Create workspace](#Create_workspace)
-   * [Jupyter notebook](#Jupyter_notebook)
+   * [Create workspace](#Create-workspace)
+   * [Jupyter notebook](#Jupyter-notebook)
    * [Docker](#Docker)
       * [Dockerfile](#Dockerfile)
-      * [Docker Image](#Docker_Image) 
+      * [Docker Image](#Docker-Image) 
 * [Run singularity in server](#Run-singularity-in-server )
 
 # Generate key to connect with acube server
