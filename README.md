@@ -290,3 +290,10 @@ I can not push the .simg image because I cannot instal git-lfs (I can not use su
 
 # Save new notebooks
 https://stackoverflow.com/questions/47418760/how-to-save-changes-in-read-only-jupyter-notebook
+
+# Errors
+- Add error creating new .simg (to do)
+- When I import datacube in the notebook from the .simg image:
+```
+OSError: /app/opt/venv/lib/libgeos_c.so: cannot open shared object file: No such file or directory
+```
