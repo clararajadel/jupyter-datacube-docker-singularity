@@ -135,14 +135,6 @@ $ jupyter notebook --config=./conf/jupyter
 ```
 
 ## Docker
-First we will write a Dockerfile. This Dockerfile will contain instructions to:
-1. Install Ubuntu
-2. Install python and pip
-3. Install all required packages --> create a file "requirements.txt" with all package names
-4. Read an entrypoint.sh file to launch jupyter notebook according to configuration in jupyter.py --> create file "entrypoint.sh"
-
-From Dockerfile a docker image will be build, tagged and run.
-
 - **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. 
 ---
 
@@ -151,6 +143,15 @@ From Dockerfile a docker image will be build, tagged and run.
 I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It didn't work: note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/. I had to use WSL2.
 
 ---
+
+- **Create a [Dockerfile](#Dockerfile)**. This Dockerfile will contain instructions to:
+1. Install Ubuntu
+2. Install python and pip
+3. Install all required packages --> create a file "requirements.txt" with all package names
+4. Read an entrypoint.sh file to launch jupyter notebook according to configuration in jupyter.py --> create file "entrypoint.sh"
+
+- **Create a [Docker Image](#Docker-Image)**. From Dockerfile a docker image will be build, tagged and run.
+
 
 ### Dockerfile
 
