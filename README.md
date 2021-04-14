@@ -184,7 +184,7 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
     ```
     $ nano Dockerfile
     ```
-    - Inside Dockerfile:
+    - Inside Dockerfile: (https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/Dockerfile)
     ```
   # BASE IMAGE
   FROM ubuntu:latest
