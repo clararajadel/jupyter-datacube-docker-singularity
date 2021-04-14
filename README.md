@@ -18,7 +18,9 @@
    * [Docker](#Docker)
       * [Dockerfile](#Dockerfile)
       * [Docker Image](#Docker-Image) 
-* [Run singularity in server](#Run-singularity-in-server )
+* [Run singularity in server](#Run-singularity-in-server)
+* [Save new notebooks](#Save-new-notebooks)
+* [Errors](#Errors)
 
 # Generate key to connect with acube server
 - Keys are saved in .ssh folder: one is the public (end with .pub). More info to customize your ssh key is found in: http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/ssh-keygen.1?query=ssh-keygen&sec=1
