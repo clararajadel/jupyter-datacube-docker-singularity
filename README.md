@@ -136,13 +136,6 @@ $ jupyter notebook --config=./conf/jupyter
 
 ## Docker
 - **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. 
----
-
-**Note: install Docker for Ubuntu in Windows 10:** 
-
-I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It didn't work: note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/. I had to use WSL2.
-
----
 
 - **Create a [Dockerfile](#Dockerfile)**. This Dockerfile will contain instructions to:
 1. Install Ubuntu
@@ -152,6 +145,13 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
 
 - **Create a [Docker Image](#Docker-Image)**. From Dockerfile a docker image will be build, tagged and run.
 
+---
+
+**Note: install Docker for Ubuntu in Windows 10:** 
+
+I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It didn't work: note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/. I had to use WSL2.
+
+---
 
 ### Dockerfile
 
@@ -163,7 +163,7 @@ According to [Docker](#Docker) before creating the Dockerfile it should be added
     ```
     $ nano requirements.txt
     ```
-    - Requirements.txt: [´requirements.txt´](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/requirements.txt)
+    - Requirements.txt: [`requirements.txt`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/requirements.txt)
 
 - **Create entrypoint.sh** in /local/scripts (create scripts):
     ```
