@@ -163,14 +163,8 @@ According to [Docker](#Docker) before creating the Dockerfile it should be added
     ```
     $ nano requirements.txt
     ```
-    - Write inside requirements.txt:
-    ```
-    jupyter
-    numpy
-    matplotlib
-    random2
-    scikit-learn
-    ```
+    - Requirements.txt: [´requirements.txt´](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/requirements.txt)
+
 - **Create entrypoint.sh** in /local/scripts (create scripts):
     ```
     $ mkdir scripts
