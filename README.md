@@ -33,6 +33,10 @@ if necessary make .ssh directory:
 $ mkdir .ssh
 ```
 - Get access to server (Emma)
+- Access server: bind A4F VM 5200 to your local 5200
+```
+$ ssh -L 5200:localhost:5200 boku@acube4floods.eodchosting.eu
+```
 
 # Local set up
 
