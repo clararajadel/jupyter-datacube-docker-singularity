@@ -20,7 +20,7 @@ RUN python3 -m pip install pip --upgrade
 # INSTALL SOFTWARE REQUIRED BY DATACUBE
 RUN apt-get install -y build-essential python3-dev python3-pip python3-venv libyaml-dev libpq-dev
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libproj-dev proj-bin libgdal-dev
-RUN apt-get install -y libgeos libgeos-dev libgeos++-dev libudunits2-dev libnetcdf-dev libhdf4-alt-dev libhdf5-serial-dev gfortran
+RUN apt-get install -y libgeos-dev libgeos++-dev libudunits2-dev libnetcdf-dev libhdf4-alt-dev libhdf5-serial-dev gfortran
 RUN apt-get install -y postgresql-doc libhdf5-doc netcdf-doc libgdal-doc 
 RUN apt-get install -y hdf5-tools netcdf-bin gdal-bin pgadmin3
 
