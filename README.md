@@ -247,8 +247,21 @@ I can not push the .simg image because I cannot instal git-lfs (I can not use su
 https://stackoverflow.com/questions/47418760/how-to-save-changes-in-read-only-jupyter-notebook
 
 # Errors
-- Add error creating new .simg (to do)
-- When I import datacube in the notebook from the .simg image:
+- When creating new .simg: tar error
+```
+gzip: /home/boku/.singularity/docker/sha256:32ce018fc27dbf5410317578350e089b00141c4428e42db7ac7081ffc3ae0b76.tar.gz: unexpected end of file
+tar: Unexpected EOF in archive
+tar: Unexpected EOF in archive
+tar: Error is not recoverable: exiting now
+Cleaning up...
+```
+This is a problem of cache. Senmao said: you should go to the .singularity folder and remove cache. Delete content in docker and metadata folders.
+```
+$ cd .singularity
+$ rm ~/.singularity/docker/*
+$ rm ~/.singularity/metadata/*
+```
+- When I import datacube in the notebook from the .simg image: 
 ```
 OSError: /app/opt/venv/lib/libgeos_c.so: cannot open shared object file: No such file or directory
 ```
