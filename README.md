@@ -15,7 +15,7 @@
 * [Local set up](#Local-set-up)
    * [Create workspace](#Create_workspace)
    * [Jupyter notebook](#Jupyter_notebook)
-   * [Docker](#3Docker)
+   * [Docker](#Docker)
       * [Dockerfile](#Dockerfile)
       * [Docker Image](#Docker_Image) 
 * [Run singularity in server](#Run-singularity-in-server )
