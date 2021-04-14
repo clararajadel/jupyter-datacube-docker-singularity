@@ -143,8 +143,6 @@ First we will write a Dockerfile. This Dockerfile will contain instructions to:
 
 From Dockerfile a docker image will be build, tagged and run.
 
-### Dockerfile
-
 - **Install Docker in your local machine** (if necessary). Docker is installed out from this github repository so files are not visible for you. 
 ---
 
@@ -153,6 +151,13 @@ From Dockerfile a docker image will be build, tagged and run.
 I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It didn't work: note that Docker Engine does not run on WSL, you have to have Docker For Windows installed on your host machine and you need to tell the Docker client where the Docker host is if you run Ubuntu in Windows 10: https://medium.com/@sebagomez/installing-the-docker-client-on-ubuntus-windows-subsystem-for-linux-612b392a44c4). For installing Docker Desktop in Windows: https://hub.docker.com/editions/community/docker-ce-desktop-windows/. I had to use WSL2.
 
 ---
+
+### Dockerfile
+
+According to [Docker](#Docker) before creating the Dockerfile it should be added:
+  a) "requirements.txt" file that contains the libraries. It allows to install all libraries with one line in Dockerfile.
+  b) "entrypont.sh" that contains the order of opening jupyter notebook (with specific configuration) and will be read by Dockerfile.
+
 - **Create requirements.txt** in /local with a list of required libraries:
     ```
     $ nano requirements.txt
@@ -180,59 +185,12 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
     ```
     chmod +x entrypoint.sh
     ```
-- **Create a file named Dockerfile** in /local:
+- **Create a file named Dockerfile** inside /local folder:
     ```
     $ nano Dockerfile
     ```
-    - Inside Dockerfile: [`Dockerfile`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/Dockerfile)
-    ```
-  # BASE IMAGE
-  FROM ubuntu:latest
-
-
-  # WORKING DIRECTORY
-  ENV APP_HOME /app
-  WORKDIR ${APP_HOME}
-
-
-  # PASTE ALL FILES IN THE WORKING DIRECTORY
-    COPY . ./
-
-
-  # INSTALL PYTHON AND PIP
-  RUN apt-get update && apt-get install -y python3 python3-pip
-  RUN python3 -m pip install pip --upgrade
-
-
-  # INSTALL SOFTWARE REQUIRED BY DATACUBE
-  RUN apt-get install -y build-essential python3-dev python3-pip python3-venv libyaml-dev libpq-dev
-  RUN DEBIAN_FRONTEND=noninteractive apt-get install -y libproj-dev proj-bin libgdal-dev
-  RUN apt-get install -y libgeos-dev libgeos++-dev libudunits2-dev libnetcdf-dev libhdf4-alt-dev libhdf5-serial-dev gfortran
-  RUN apt-get install -y postgresql-doc libhdf5-doc netcdf-doc libgdal-doc
-  RUN apt-get install -y hdf5-tools netcdf-bin gdal-bin pgadmin3
-
-
-  # CREATE VIRTUAL ENVIRONMENT
-  RUN python3 -m venv /app/opt/venv
-
-
-  # ADD DATACUBE
-  RUN /app/opt/venv/bin/pip install -U pip setuptools
-  RUN /app/opt/venv/bin/pip install -U wheel 'setuptools_scm[toml]' cython
-  RUN /app/opt/venv/bin/pip install -U 'pyproj==2.*' 'datacube[all]' --no-binary=rasterio,pyproj,shapely,fiona,psycopg2,netCDF4,h5py
-
-
-  # GDAL
-  RUN /app/opt/venv/bin/pip install GDAL==$(gdal-config --version)
-
-
-  # INSTALL REST OF LIBRARIES
-  RUN /app/opt/venv/bin/pip install -r ./requirements.txt
-  #RUN /opt/venv/bin/python3 -m pip install -r ./requirements.txt
-
-  # CALL NOTEBOOKS
-  CMD ["/app/scripts/entrypoint.sh"]
-    ```
+    - Dockerfile text: [`Dockerfile`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/Dockerfile)
+    
     ---
     **Notes about Dockerfile**
 
