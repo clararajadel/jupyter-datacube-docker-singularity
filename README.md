@@ -78,6 +78,10 @@ $ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-
 ```
 (all path is written because the environment is saved out from default path: /miniconda3/envs)
 ## Jupyter notebook
+- **Activate conda environment** if it is not yet activated:
+```
+$ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
+```
 - **Install jupyter and add ipykernel**. Ipykernel is a  Jupyter kernel to work with Python code in Jupyter notebooks.
 ```
 $ conda install jupyter
