@@ -226,7 +226,7 @@ $ docker push localhost:5000/eodc-jupyter:1.0
 ```
 $ ssh -L 5200:localhost:5200 -R 5201:localhost:5000 boku@acube4floods.eodchosting.eu
 ```
-With above command, you bind your local port 5000(docker-registry port) to A4F VM port 5201, and bind A4F VM 5200 to your local 5200.
+With above command, [-R] you bind your local port 5000(docker-registry port) to A4F VM port 5201, and [-L] bind A4F VM 5200 to your local 5200.
 
 -  **Clone this repository**: jupyter-datacube-docker-singularity repository.
 ```
