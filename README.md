@@ -238,7 +238,7 @@ $ export SINGULARITY_NOHTTPS=1
 ```
 - **Build and run singularity image**. You should build your image in the same folder as "nbs" folder.
 
-    - *- B /eodc:/eodc* : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option.
+    - **[- B /eodc:/eodc]** : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option. [-B]: -B, --bind strings a user-bind path specification.  spec has the format src[:dest[:opts]], where src and dest are outside and inside paths.  If dest is not given, it is set equal to src.  Mount options ('opts') may be specified as 'ro' (read-only) or 'rw' (read/write, which is the default). Multiple bind paths can be given by a comma separated list. (https://sylabs.io/guides/3.1/user-guide/cli/singularity_exec.html)
 ```
 $ cd jupyter-datacube-docker-singularity/local/
 $ singularity build eodc-jupyter.simg docker://localhost:5201/eodc-jupyter:1.0
