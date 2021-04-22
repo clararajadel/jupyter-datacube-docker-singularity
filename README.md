@@ -269,7 +269,12 @@ $ rm ~/.singularity/metadata/*
 ```
 OSError: /app/opt/venv/lib/libgeos_c.so: cannot open shared object file: No such file or directory
 ```
+Solution: deactivate all environments from the terminal (not forget bash):
+```
+$ conda deactivate (name of the environment)
+$ conda deactivate bash
+```
 - If a new notebook pasted in "nbs" does not work maybe is because it is not in executable mode (you can check it typing "ls -la" in "nbs". To allow access:
 ```
-chmod +x (name of the .py or .ipynb file)
+$ chmod +x (name of the .py or .ipynb file)
 ```
