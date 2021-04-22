@@ -236,6 +236,7 @@ With above command, you bind your local port 5000(docker-registry port) to A4F V
 ```
 $ export SINGULARITY_NOHTTPS=1
 ```
+SINGULARITY_NOHTTPS: This is relevant if you want to use a registry that doesn’t have https, and it speaks for itself. If you export the variable SINGULARITY_NOHTTPS you can force the software to not use https when interacting with a Docker registry. This use case is typically for use of a local registry. (https://sylabs.io/guides/3.0/user-guide/build_env.html)
 - **Build and run singularity image**. You should build your image in the same folder as "nbs" folder.
 
     - **[- B /eodc:/eodc]** : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option. [-B]: -B, --bind strings a user-bind path specification.  spec has the format src[:dest[:opts]], where src and dest are outside and inside paths.  If dest is not given, it is set equal to src.  Mount options ('opts') may be specified as 'ro' (read-only) or 'rw' (read/write, which is the default). Multiple bind paths can be given by a comma separated list. (https://sylabs.io/guides/3.1/user-guide/cli/singularity_exec.html)
