@@ -249,7 +249,8 @@ I can not push the .simg image because I cannot instal git-lfs (I can not use su
 -  **Access your jupyter notebooks** at your browser at url: localhost:5200
 
 # Save new notebooks
-https://stackoverflow.com/questions/47418760/how-to-save-changes-in-read-only-jupyter-notebook
+- https://stackoverflow.com/questions/47418760/how-to-save-changes-in-read-only-jupyter-notebook
+- The easiest way to put the jupyter notebook at local folder on the VM instead of inside the singularity or docker container. When you run the container, you bind the local folder into the container with -B option for singularity. Then every change you made within container will be automatically stored at your local folder.
 
 # Errors
 - When creating new .simg: tar error
