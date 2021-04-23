@@ -19,7 +19,7 @@
       * [Dockerfile](#Dockerfile)
       * [Docker Image](#Docker-Image) 
 * [Run singularity in server](#Run-singularity-in-server)
-* [Save new notebooks](#Save-new-notebooks)
+* [Working with singularity after setup](#Working-with-singularity-after-setup)
 * [Errors](#Errors)
 
 # Generate key to connect with acube server
@@ -49,7 +49,6 @@ Docker image should be build locally because there is not super user root in the
 **2. Jupyter notebook:** 
     
    - install jupyter notebook
-   - make directory called "nbs" to save all notebooks (this step is important: docker will only read notebooks inside this folder)
    - change jupyter configuration for:
         - launching notebooks contained inside "nbs" directory
         - avoiding authentication issues (adding your own password)
@@ -67,18 +66,18 @@ Docker image should be build locally because there is not super user root in the
   ```
   $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
   ```
-- **Create local workspace**. This folder will contain all files required to build the docker image. Later it will be copied (using scp) or cloned (using git) in the VM to have access to these files from the VM.
+- **Create local workspace**. This folder will contain all files required to build the docker image. Later it will be cloned (using git) in the VM to have access to these files from the VM.
 ```
 $ mkdir local
 ```
-- **Create and activate virtual environment** named "jupy-docker" using conda. The environment is created to use jupyter locally (without datacube) and verify that the new configuration works properly. This step is not mandatory, you can use an existing environment but I do not recommend it.
+- **Create and activate virtual environment** named "jupy-docker" using conda. The environment is created to use jupyter locally (without datacube) and verify that the new configuration works properly. This step is not mandatory.
 ```
 $ conda create -p /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 $ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 ```
 (all path is written because the environment is saved out from default path: /miniconda3/envs)
 ## Jupyter notebook
-- **Activate conda environment** if it is not yet activated:
+- **Activate conda environment** (if it is not activated):
 ```
 $ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-docker
 ```
@@ -87,53 +86,37 @@ $ source activate /home/clara/projects/jupyter-datacube-docker-singularity/jupy-
 $ conda install jupyter
 $ python -m ipykernel install --user --name jupy-docker --display-name "Python (jupy-docker)"
 ```
-if necessary install ipykernel:
+before: if necessary install ipykernel:
 ```
 $ conda install ipykernel
 ```
 
-- **Make directory "nbs"** inside "local" directory (this step is important: docker will only read notebooks inside this folder)
+- **Make directory "nbs" and add notebooks** outside "local" directory. Write a small code in a .ipynb file and save it in "nbs" folder. This directory will contain your notebooks and will be cloned in the VM. Adding at least one notebook is necessary because if not "nbs" folder won't be cloned. Later from the VM, using jupyter notebook with singularity image, you will be able to modify notebooks and save new changes. It is outside from "local" directory because there we save all files related with docker image. To modify notebooks using singularity image they have to be outside from docker image and, as well, singularity image. If they are inside, you can not modify them once images are built. Jupyter will open the directory that you configure in its jupyter configuration, meanwhile its path contains folder "nbs" you can work on it.
  ```
- $ cd local
+ $ cd jupyter-datacube-docker-singularity/
  $ mkdir nbs
  ```
  - **Create password for jupyter**. The terminal will ask you for a password and then will print a string. Copy this string to paste it later in the jupyter configuration.
  ```
 $ ipython -c "from notebook.auth import passwd; passwd()"
  ```
-- **Customize jupyter configuration** creating jupyter.py file inside "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration. All info about jupyter configuration can be found here https://jupyter-notebook.readthedocs.io/en/stable/config.html.
+- **Customize jupyter configuration** creating [`jupyter.py`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/conf/jupyter.py) file inside "local/conf" folder. (Note: default jupyter config can be accessed typing in the terminal: jupyter notebook --generate-config). We create a new config file to not change defaults in your local jupyter configuration. All info about jupyter configuration can be found here https://jupyter-notebook.readthedocs.io/en/stable/config.html.
 ```
+$ cd local
 $ mkdir conf
 $ cd conf
 $ nano jupyter.py
 ```
-In jupyter.py:
-```
-import os
-c = get_config()
-# Kernel config
-c.IPKernelApp.pylab = 'inline'  # if you want plotting support always in your notebook
-# Notebook config
-c.NotebookApp.notebook_dir = 'nbs'
-c.NotebookApp.allow_origin = '*' # put your public IP Address here or * to allow all
-c.NotebookApp.ip = '*'
-c.NotebookApp.allow_remote_access = True
-c.NotebookApp.open_browser = False
-c.NotebookApp.password = u'...' # password copied in "create password for jupyter"
-c.NotebookApp.port = int(os.environ.get("PORT", 5200))
-c.NotebookApp.allow_root = True
-c.NotebookApp.allow_password_change = True
-c.ConfigurableHTTPProxy.command = ['configurable-http-proxy', '--redirect-port', '80']
-```
+
  ---
  **Notes about jupyter.py config:**
- - nbs: root directory
+ - c.NotebookApp.notebook_dir: if you want to open jupyter locally write your local path (e.g. /home/clara). But when you are going to create Dockerfile, change this path to your server path (e.g. /home/boku)
  - allow_origin: to all (to launch it from the VM)
  - port: 5200 (use one port that is not used by other users in the VM)
  - allow_root: because the project is shared maybe I should change to False
  ---
 
-- **Access jupyter notebook and save a .ipynb**: Write a small code in a .ipynb file and save it in the "nbs" folders. This step is necessary because if not "nbs" folder won't be cloned.
+- **Access jupyter notebook and save a .ipynb**: If you want to check jupyter configuration is working (path, password, ect) make sure you did step: Install jupyter and ipykernel, and your path in "c.NotebookApp.notebook_dir" in [`jupyter.py`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/conf/jupyter.py) is to your local machine, not the server. Then type:
 ```
 $ jupyter notebook --config=./conf/jupyter
 ```
@@ -159,28 +142,22 @@ I followed this documentation https://docs.docker.com/engine/install/ubuntu/. It
 
 ### Dockerfile
 
-According to [Docker](#Docker) before creating the Dockerfile it should be added:
-  a) "requirements.txt" file that contains the libraries. It allows to install all libraries with one line in Dockerfile.
-  b) "entrypont.sh" that contains the order of opening jupyter notebook (with specific configuration) and will be read by Dockerfile.
+According to previous [Docker](#Docker) explanation, Dockerfile requires:
+  a) "requirements.txt" file for installing libraries. It allows to simplify libraries installation in one line in Dockerfile.
+  b) "entrypoint.sh" that contains the order of opening jupyter notebook (with specific configuration) and will be read by Dockerfile.
 
-- **Create requirements.txt** in /local with a list of required libraries:
+- **Create [`requirements.txt`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/requirements.txt)** in /local with a list of libraries:
     ```
     $ nano requirements.txt
     ```
-    - Requirements.txt: [`requirements.txt`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/requirements.txt)
 
-- **Create entrypoint.sh** in /local/scripts (create scripts):
+- **Create [`entrypoint.sh`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/local/scripts/entrypoint.sh)** in /local/scripts (create scripts). This script will contain the order to install ipykernel and open Jupyter Notebook following jupyter.py config. It refers to /app/opt path because the environment in the Dockerfile will be named /app/opt and singularity needs an entire path to build the image.
     ```
     $ mkdir scripts
     $ cd scripts
     $ nano entrypoint.sh
     ```
-    - In entrypoint.sh add the order to open Jupyter Notebook following jupyter.py config. 
-    - /app path is used because the environment in the Dockerfile will be named /app and singularity needs the entire path to build the image.
-    ```
-    /usr/local/bin/jupyter-notebook --config=/app/conf/jupyter.py
-    ```
-    - The format of entrypoint.sh should be changed (íf not maybe you get error while building the image). In the terminal type:
+    - The format of entrypoint.sh should be changed to allow access (íf not maybe you get error while building the image). In the terminal type:
     ```
     chmod +x entrypoint.sh
     ```
@@ -194,17 +171,17 @@ According to [Docker](#Docker) before creating the Dockerfile it should be added
     **Notes about Dockerfile**
 
     - The base image is Ubuntu to work with Linux (but python base image I think also includes linux software).
-    - The new working environment is /app. That is why the entrypoint.sh order includes /app in the config. (ENV: declare the name of environmental variables and WORKDIR: specifies the work environment)
+    - The new working environment is /app. That is why the entrypoint.sh order includes /app/opt in the config. (ENV: declare the name of environmental variables and WORKDIR: specifies the work environment)
     - Python and pip are installed
     - I need an environment, if not libraries such as scikit-learn won't work. The issue is because singularity doesn't work as docker regarding isolating the system. So, when using singularity, it is needed to install package or copy your data/files into a location where your user account has the permission. The normal place is "/opt", where all users have the rw access:  /opt is for "the installation of add-on application software packages".  /usr/local is "for use by the system administrator when installing software locally".
-    - Then are followed the instructions to install datacube by the documentation: https://datacube-core.readthedocs.io/en/latest/ops/ubuntu.html#python-venv-installation. Moreover the documentation recommends making the installation in a virtual environment (odc), in this case we use: /opt. 
-    - After that gdal is installed. Datacube doesn't need GDAL but we use it in our project.
-    - Pip installs the requirements.txt libraries.
-    - The final command is for reading the entrypoint.sh. You have to write all the filepath if you want to run the code (with Singularity is not possible writing: ./scripts/entrypoint.sh).
+    - Then are followed instructions to install datacube by the documentation: https://datacube-core.readthedocs.io/en/latest/ops/ubuntu.html#python-venv-installation. Moreover the documentation recommends making the installation in a virtual environment (odc), in this case we use: /opt. 
+    - After gdal is installed. Datacube doesn't need GDAL but we use it in our project.
+    - Pip installs requirements.txt libraries.
+    - Final command reads entrypoint.sh. You have to write all the filepath if you want to run the code (with Singularity is not possible writing: ./scripts/entrypoint.sh).
     - All commands that include <DEBIAN_FRONTEND=noninteractive> are created to avoid interaction while building the image.
     ---
 ### Docker Image
-- **Build the image**: In the terminal, inside the folder where is the Dockerfile type:
+- **Build image**: In the terminal, inside the folder where is Dockerfile type:
 ```
 $ docker build -t eodc-jupyter -f Dockerfile .
 ```
@@ -212,11 +189,11 @@ $ docker build -t eodc-jupyter -f Dockerfile .
 ```
 $ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ```
-- **Tag your image** with the version (creating "other image": same ID, different name). This is the image to push in the docker server. The port of the computer from where is launched is specified.
+- **Tag your image** with version (creating "other image": same ID, different name). This is the image to push in docker server. The port of launching computer is specified.
 ```
 $ docker tag eodc-jupyter localhost:5000/eodc-jupyter:1.0
 ```
-- Finally, **push the docker image** to the server and it will become available in other machine through docker server.
+- Finally, **push docker image** to the server and it will become available in other machine through docker server service.
 ```
 $ docker push localhost:5000/eodc-jupyter:1.0
 ```
@@ -227,31 +204,44 @@ $ docker push localhost:5000/eodc-jupyter:1.0
 $ ssh -L 5200:localhost:5200 -R 5201:localhost:5000 boku@acube4floods.eodchosting.eu
 ```
 With above command, [-R] you bind your local port 5000(docker-registry port) to A4F VM port 5201, and [-L] bind A4F VM 5200 to your local 5200.
-
--  **Clone this repository**: jupyter-datacube-docker-singularity repository.
+- **Deactivate environments**: If necessary. Don't forget bash.
+```
+$ conda deactivate
+```
+-  **Clone this repository**: jupyter-datacube-docker-singularity repository. This is important to have access to "/scripts/entrypoint.sh" (that will be read by singularity) and "nbs" where are required notebooks. You can also copy (-scp) these two folders directly to the server.
 ```
  $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
  ```
-- **Allow singularity work in server** running the following command. (I did a similar step for running docker in Ubuntu for Windows, see in install Docker section)
+- **Allow singularity work in server without https** running the following command. SINGULARITY_NOHTTPS: This is relevant if you want to use a registry that doesn’t have https, and it speaks for itself. If you export the variable SINGULARITY_NOHTTPS you can force the software to not use https when interacting with a Docker registry. This use case is typically for use of a local registry. (https://sylabs.io/guides/3.0/user-guide/build_env.html)
 ```
 $ export SINGULARITY_NOHTTPS=1
 ```
-SINGULARITY_NOHTTPS: This is relevant if you want to use a registry that doesn’t have https, and it speaks for itself. If you export the variable SINGULARITY_NOHTTPS you can force the software to not use https when interacting with a Docker registry. This use case is typically for use of a local registry. (https://sylabs.io/guides/3.0/user-guide/build_env.html)
-- **Build and run singularity image**. You should build your image in the same folder as "nbs" folder.
+- **Build and execute singularity image**. You should build your image in the same folder as "/scripts/entrypoint.sh" folder which is inside "local".
 
-    - **[- B /eodc:/eodc]** : the /eodc storage is not available inside the singularity container. Therefore, You need to bind the /eodc to the singularity container with -B option. [-B]: -B, --bind strings a user-bind path specification.  spec has the format src[:dest[:opts]], where src and dest are outside and inside paths.  If dest is not given, it is set equal to src.  Mount options ('opts') may be specified as 'ro' (read-only) or 'rw' (read/write, which is the default). Multiple bind paths can be given by a comma separated list. (https://sylabs.io/guides/3.1/user-guide/cli/singularity_exec.html)
+    - **[- B /home/boku:/home/boku]** : /home/boku storage is not available inside singularity container. Therefore, you need to bind /home/boku to singularity container with -B option. [-B]: (https://sylabs.io/guides/3.1/user-guide/cli/singularity_exec.html). In my case, /home/boku path contains this project and others, so from this path I can access to "nbs": /home/boku/jupyter-datacube-docker-singularity/nbs once I'm in jupyter notebook. I could also specify more my path instead of /home/boku to /home/boku/jupyter-datacube-docker-singularity/.
 ```
 $ cd jupyter-datacube-docker-singularity/local/
 $ singularity build eodc-jupyter.simg docker://localhost:5201/eodc-jupyter:1.0
-$ singularity exec -B /eodc:/eodc eodc-jupyter.simg  /app/scripts/entrypoint.sh
+$ singularity exec -B /home/boku:/home/boku eodc-jupyter.simg  /app/scripts/entrypoint.sh
 ```
-I can not push the .simg image because I cannot instal git-lfs (I can not use sudo)
 -  **Access your jupyter notebooks** at your browser at url: localhost:5200
+-  **Add .simg to [`.gitignore`](https://github.com/clararajadel/jupyter-datacube-docker-singularity/blob/main/.gitignore)**: I can not push .simg image because I cannot instal git-lfs (I can not use sudo).
+```
+$ cd jupyter-datacube-docker-singularity
+$ nano .gitignore
+```
 
-# Save new notebooks
-- https://stackoverflow.com/questions/47418760/how-to-save-changes-in-read-only-jupyter-notebook
-- The easiest way to put the jupyter notebook at local folder on the VM instead of inside the singularity or docker container. When you run the container, you bind the local folder into the container with -B option for singularity. Then every change you made within container will be automatically stored at your local folder.
-
+# Working with singularity after setup
+- Locally:
+```
+$ ssh -L 5200:localhost:5200 -R 5201:localhost:5000 boku@acube4floods.eodchosting.eu
+```
+- In VM don´t forget to deactivate all environments and type:
+```
+$ export SINGULARITY_NOHTTPS=1
+$ cd jupyter-datacube-docker-singularity/local/
+$ singularity exec -B /home/boku:/home/boku eodc-jupyter.simg  /app/scripts/entrypoint.sh
+```
 # Errors
 - When creating new .simg: tar error
 ```
