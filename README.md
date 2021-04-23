@@ -212,6 +212,10 @@ $ conda deactivate
 ```
  $ git clone https://github.com/clararajadel/jupyter-datacube-docker-singularity.git
  ```
+ or
+ ```
+ scp -r /local/path/ boku@acube4floods.eodchosting.eu:/server/path
+ ```
 - **Allow singularity work in server without https** running the following command. SINGULARITY_NOHTTPS: This is relevant if you want to use a registry that doesn’t have https, and it speaks for itself. If you export the variable SINGULARITY_NOHTTPS you can force the software to not use https when interacting with a Docker registry. This use case is typically for use of a local registry. (https://sylabs.io/guides/3.0/user-guide/build_env.html)
 ```
 $ export SINGULARITY_NOHTTPS=1
