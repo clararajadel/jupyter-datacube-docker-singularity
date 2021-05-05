@@ -1,4 +1,42 @@
-def query_data (latitude, longitude, date, Rootoutput):
+import gdal
+import numpy as np
+# from scipy import stats
+import matplotlib.pyplot as plt
+from osgeo import ogr, osr
+import random
+from datetime import timedelta, date
+import datacube
+acube = datacube.Datacube(app='boku', env='acube')
+import math
+import datetime
+from datetime import timedelta, date, datetime
+from datacube.utils.cog import write_cog
+from pylab import *
+import os
+import matplotlib.colors as clr
+import itertools
+import csv
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import cohen_kappa_score
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+
+def get_long_lat (tif):
+    ds = gdal.Open(tif)
+    gt = ds.GetGeoTransform()
+    width = ds.RasterXSize
+    height = ds.RasterYSize
+    minx = gt[0]
+    miny = gt[3] + width*gt[4] + height*gt[5] 
+    maxx = gt[0] + width*gt[1] + height*gt[2]
+    maxy = gt[3]
+    longitude = (minx, maxx)
+    latitude = (miny, maxy)
+    return longitude, latitude
+
+
+def query_data (latitude, longitude, date):
     query = {
         'product': 'B_Sentinel_2',
         'output_crs': 'EPSG:32633',
@@ -6,7 +44,7 @@ def query_data (latitude, longitude, date, Rootoutput):
         'lon': longitude,
         'lat': latitude,
         'time': date,
-        'measurements': ['B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B11', 'B12'], 
+        'measurements': ['B02', 'B03', 'B04', 'B05', 'B06', 'B07', 'B08', 'B8A', 'B11', 'B12'],
         'cloud_cover_percentage': (0.0, 50.0)
     }
     data = acube.load(**query)
@@ -16,8 +54,7 @@ def query_data (latitude, longitude, date, Rootoutput):
     return data_array, geo
 
 
-def image_selection_byCloud (fdate, latitude, longitude, cpercen, mode):
-    
+def image_selection_byCloud(fdate, latitude, longitude, cpercen, mode):
     '''
     fdate = tuple(YYYY, MM, DD)
     latitude = tuple(xx, yy)
@@ -25,32 +62,32 @@ def image_selection_byCloud (fdate, latitude, longitude, cpercen, mode):
     cpercen = str
     mode = str('before') or str('after')
     '''
-    
+
     # date range
-    sdate =  fdate  # start date: flood date
+    sdate = fdate  # start date: flood date
     if mode == 'before':
-        edate = date(2015, 7, 1)   # end date: first sentinel 2 image
-        delta = sdate - edate       # as timedelta
-        time = (str(edate), str(sdate)) # time range for query
+        edate = date(2015, 7, 1)  # end date: first sentinel 2 image
+        delta = sdate - edate  # as timedelta
+        time = (str(edate), str(sdate))  # time range for query
     elif mode == 'after':
         now = datetime.datetime.now()
         edate = date(now.year, now.month, now.day)  # end date: today
-        delta = edate - sdate       # as timedelta
-        time = (str(sdate), str(edate)) # time range for query
+        delta = edate - sdate  # as timedelta
+        time = (str(sdate), str(edate))  # time range for query
     else:
         print('No valid mode')
-    
+
     # list available dates in acube: they are not ordered
     c_product = 'CLOUDMASK_Sentinel_2'
     c_query = {
         'lat': latitude,
         'lon': longitude,
         'time': time
-    } 
+    }
     acube_dates = []
     for dataset in acube.find_datasets_lazy(product=c_product, **c_query):
         acube_dates.append((dataset.center_time).strftime("%Y-%m-%d"))
-    
+
     # for loop per available days: see cloud coverage
     for i in range(delta.days + 1):
         if mode == 'before':
@@ -62,7 +99,7 @@ def image_selection_byCloud (fdate, latitude, longitude, cpercen, mode):
         # query cloud data
         if day in acube_dates:
             print(f'day {day} is in acube_dates')
-            #print('Cloud data querying...')
+            # print('Cloud data querying...')
             cloud_query = {
                 'product': 'CLOUDMASK_Sentinel_2',
                 'output_crs': 'EPSG:32633',
@@ -74,12 +111,12 @@ def image_selection_byCloud (fdate, latitude, longitude, cpercen, mode):
             }
             # select image with cloud coverage condition
             cloud = acube.load(**cloud_query)
-            #print('Transform query to array...')
-            cloud_array = np.array(cloud.to_array())[0] #there is only one band
+            # print('Transform query to array...')
+            cloud_array = np.array(cloud.to_array())[0]  # there is only one band
             print('Calculating cloud coverage...')
             if len(np.unique(cloud_array[0])) == 1:
                 print('No cloud coverage')
-                s2_array, s2_geo = query_data(latitude, longitude, day, Rootoutput)
+                s2_array, s2_geo = query_data(latitude, longitude, day)
                 if not np.any(s2_array) == False:
                     print('End')
                     break
@@ -87,11 +124,12 @@ def image_selection_byCloud (fdate, latitude, longitude, cpercen, mode):
                     print('sentinel 2 band-arrays full of zeros!')
                     continue
             elif len(np.unique(cloud_array[0])) == 2:
-                cloud_coverage = np.count_nonzero(cloud_array[0] == 255)/(cloud_array.shape[1]*cloud_array.shape[2])*100
+                cloud_coverage = np.count_nonzero(cloud_array[0] == 255) / (
+                            cloud_array.shape[1] * cloud_array.shape[2]) * 100
                 print('Cloud coverage (%):', cloud_coverage)
                 if cloud_coverage < cpercen:
                     print(f'Cloud coverage less than {cpercen}%')
-                    s2_array, s2_geo = query_data(latitude, longitude, day, Rootoutput)
+                    s2_array, s2_geo = query_data(latitude, longitude, day)
                     if not np.any(s2_array) == False:
                         print('End')
                         break
@@ -107,7 +145,7 @@ def image_selection_byCloud (fdate, latitude, longitude, cpercen, mode):
             print(f'day {day} is not in acube_dates')
             continue
     # delete temporal dimension (there is only one image)
-    s2_array = s2_array.reshape(s2_array.shape[0],s2_array.shape[2],s2_array.shape[3])
+    s2_array = s2_array.reshape(s2_array.shape[0], s2_array.shape[2], s2_array.shape[3])
     return day, s2_array, cloud_array, s2_geo
 
 
@@ -188,27 +226,51 @@ def VegetationIndex(y1, filter_col, features):
     return y1
 
 
-def maskGeneration(array, geo_inf, target_layer):
-# vector_layer = r"C:\Users\Emma\Desktop\ACube4Floods\code\GT_data\29_10_18_Gail.shp"
-# raster_layer = r"C:\Users\Emma\Desktop\ACube4Floods\code\data\load_Carinthia\clip\Carinthia_clean_Image_20181117.tif"
-# target_layer = r"C:\Users\Emma\Desktop\ACube4Floods\code\mask.tif"
+def maskGeneration(array, geo_inf, area, subarea, path_gpkg, path_shapefiles, mask_tif):
+    # 1° define properties (size, geotransform and crs) from downloaded acube images [insert array]
+    # 2° from these properties and defining a path, create the mask tif [insert path/name.tif]
+    # 3° import geopackage as shp: it contains flood no flood info, and download all its layers (different areas) [insert path/name.gpkg]
+    # 4° combine (rasterize) the mask tif with the shp
 
-    # open the raster layer and get its relevant properties
-    xSize, ySize = array.shape
-    geotransform = ([geo_inf['lon'], 8.983152858765616e-05, 0.0, geo_ing['lat'], 0.0, -8.983152840909205e-05])
+    # open raster layer and get its relevant properties
+    xSize, ySize = array.shape[1:]
+    geotransform = ([geo_inf['lon'], 8.983152858765616e-05, 0.0, geo_inf['lat'], 0.0, -8.983152840909205e-05])
     crs = 'EPSG:32633'
 
-    # create the target layer (1 band)
+    # create the target layer (mask) (1 band)
     driver = gdal.GetDriverByName('GTiff')
-    target_ds = driver.Create(target_layer, xSize, ySize, bands = 1, eType = gdal.GDT_Byte, options = ["COMPRESS=DEFLATE"])
+    target_layer = mask_tif
+    target_ds = driver.Create(target_layer, xSize, ySize, bands=1, eType=gdal.GDT_Byte, options=["COMPRESS=DEFLATE"])
     target_ds.SetGeoTransform(geotransform)
     target_ds.SetProjection(crs)
+    
+    # import vector layer
+    # anyadir funcion que te busque el archivo con el nombre del area porque los anyos cambian --WARNING!!!
+    files = sorted(os.listdir(path_gpkg))
+    for f in files:
+        if f'{area}' in f and f.endswith(('.gpkg')) and os.path.isfile(os.path.join(path_gpkg, f)):
+            root_file = path_gpkg+f
+    ds = ogr.GetDriverByName('GPKG').Open(root_file, 1)
+    source = ogr.Open(root_file, update=False)
+    gpkg_layers = [l.GetName() for l in ogr.Open(root_file)]
+    drv = ogr.GetDriverByName('ESRI Shapefile')
+    masks = []
+    for i in gpkg_layers:
+        inlyr = source.GetLayer(i)
+        outds = drv.CreateDataSource(f'{path_shapefiles}/{area}_pr_' + i + '.shp')
+        outlyr = outds.CopyLayer(inlyr, i)
+    del inlyr, outlyr, outds
 
     # rasterize the vector layer into the target one
-    ds = gdal.Rasterize(target_ds, vector_layer, burnValues=[1])
+    files2 = sorted(os.listdir(path_shapefiles))
+    for f in files2:
+        if area in f and subarea in f and f.endswith(('.shp')) and os.path.isfile(os.path.join(path_gpkg, f)):
+            ds = gdal.Rasterize(target_ds, f, burnValues=[1])
+            myarray = np.array(ds.GetRasterBand(1).ReadAsArray())
+            masks.append(my_array)
 
     target_ds = None
-    return ds
+    return masks
 
 
 def loadGeoTiff(root_image):
@@ -221,18 +283,19 @@ def loadGeoTiff(root_image):
 
 
 def ind_VfoldCross(data, selec):
+    import random
     random.seed(30)
 
     cls = np.unique(data)
     arr_train = []
 
     for i in cls:
-        #get the indexes for each
+        # get the indexes for each
         ind = np.where(data == i)
 
         if len(ind[0]) < selec:
             sel = random.sample(range(len(ind[0])), len(ind[0]))
-            sel = [sel[i] for i in range(int(np.round(2*len(ind[0])/3)))]
+            sel = [sel[i] for i in range(int(np.round(2 * len(ind[0]) / 3)))]
             arr_train.extend(ind[0][sel])
         else:
             sel = random.sample(range(len(ind[0])), selec)
@@ -243,7 +306,8 @@ def ind_VfoldCross(data, selec):
 
 def RandomForestClassification(X_train, Y_train, n_feat, Njobs=None,
                                vfolds=5, Ntree=[100], min_samples_lf=[1],
-                               min_samples_sp=[2]):
+                               min_samples_sp=[2], save_path):
+    import random
     # CROSS-VALIDATION:
     random.seed(999)
     classifiers = []
@@ -255,7 +319,7 @@ def RandomForestClassification(X_train, Y_train, n_feat, Njobs=None,
                 for split in min_samples_sp:
                     scores = []
                     for t in range(0, vfolds):
-                        tr_index = ind_VfoldCross(Y_train, np.round(int(len(np.where(Y_train == cl)[0])/vfolds)))
+                        tr_index = ind_VfoldCross(Y_train, np.round(int(len(np.where(Y_train == cl)[0]) / vfolds)))
                         val_index = diff_emma(range(len(Y_train)), tr_index)
                         x_t = X_train[tr_index, :]
                         y_t = Y_train[tr_index]
@@ -291,13 +355,13 @@ def RandomForestClassification(X_train, Y_train, n_feat, Njobs=None,
     #
     # CM = confusion_matrix(Y_test, Ypred)
     parameters = [BestNtree, Bestn_feat, Bestmin_samples_lf, Bestmin_samples_sp]
-    return cl_Final, parameters#OA, kappa, CM, Ypred
+    joblib.dump(rf, f"{save_path}/random_forest.joblib")
+    return cl_Final, parameters  # OA, kappa, CM, Ypred
 
 
 def diff_emma(first, second):
-    '''
-    returns "first" but deleting values included in "second"
-    '''
+    '''returns "first" but deleting values included in "second"'''
+
     second = set(second)
     return [item for item in first if item not in second]
 
@@ -310,64 +374,64 @@ def plot_confusion_matrix(cm, classes,
     This function prints and plots the confusion matrix.
     Normalization can be applied by setting `normalize=True`.
     """
-    
+
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title,fontsize=20)
+    plt.title(title, fontsize=20)
     # plt.colorbar()
     tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45,fontsize=16)
-    plt.yticks(tick_marks, classes,fontsize=16)
- 
+    plt.xticks(tick_marks, classes, rotation=45, fontsize=16)
+    plt.yticks(tick_marks, classes, fontsize=16)
+
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
     else:
         print('Confusion matrix')
- 
+
     print(cm)
- 
+
     thresh = cm.max() / 2.
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(j, i, cm[i, j],
                  horizontalalignment="center",
                  color="white" if cm[i, j] > thresh else "black")
- 
-    plt.tight_layout()
-    plt.ylabel('True label',fontsize=14)
-    plt.xlabel('Predicted label',fontsize=14)
 
-    
+    plt.tight_layout()
+    plt.ylabel('True label', fontsize=14)
+    plt.xlabel('Predicted label', fontsize=14)
+
+
 def rf_save_results(CM, OA, kappa, PEN, SR, target_names, Rootoutput, identifier):
     plt.figure()
-    plot_confusion_matrix(CM, classes=target_names, normalize=False, title=identifier, 
+    plot_confusion_matrix(CM, classes=target_names, normalize=False, title=identifier,
                           cmap=plt.cm.Blues)
-    plt.savefig(Rootoutput + identifier + '.png', format='png',dpi=1000, bbox_inches = "tight")
+    plt.savefig(Rootoutput + identifier + '.png', format='png', dpi=1000, bbox_inches="tight")
     plt.close('all')
- 
+
     # save to disk as csv file
     f = Rootoutput + identifier + '.csv'
-    
+
     headerfile = identifier
- 
-    #g = csv.writer(f, dialect='unix')
+
+    # g = csv.writer(f, dialect='unix')
     with open(f, 'w', newline='') as csvfile:
-        g = csv.writer(csvfile, delimiter=' ',quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        
+        g = csv.writer(csvfile, delimiter=' ', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
         g.writerow(headerfile)
         g.writerow('')
         g.writerow(['CM:'])
         for i in range(CM.shape[0]):
-            g.writerow(CM[i,:])
+            g.writerow(CM[i, :])
         g.writerow('')
         g.writerow(['OA:', OA])
         g.writerow('')
-        g.writerow(['Kappa:',kappa])
+        g.writerow(['Kappa:', kappa])
         g.writerow('')
         g.writerow(['PEN:', PEN])
         g.writerow('')
-        g.writerow(['SR:',SR])
+        g.writerow(['SR:', SR])
 
-        
+
 def scale(X):
     cols = []
     descale = []
@@ -388,14 +452,14 @@ def writeout(array, Rootoutput, identifier, ds_lon, ds_lat):
     rows = array.shape[-1]
     # acube images are requested with this projection
     crs = 'EPSG:32633'
-    #(xmin, xsize, 0, ymin, 0, ysize)
+    # (xmin, xsize, 0, ymin, 0, ysize)
     geotransform = ([ds_lon, 8.983152858765616e-05, 0.0, ds_lat, 0.0, -8.983152840909205e-05])
     driver = gdal.GetDriverByName('GTiff')
     # acube images are uint16
-    ds = driver.Create(Rootoutput + identifier + '.tif', rows, cols, 1, gdal.GDT_Float64 )
+    ds = driver.Create(Rootoutput + identifier + '.tif', rows, cols, 1, gdal.GDT_Float64)
     ds.SetGeoTransform(geotransform)
     ds.SetProjection(crs)
-    outband=ds.GetRasterBand(1)
+    outband = ds.GetRasterBand(1)
     outband.WriteArray(array)
     ds = None
     outband = None
